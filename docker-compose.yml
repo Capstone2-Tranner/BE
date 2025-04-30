@@ -1,0 +1,9 @@
+api-gateway:
+  build: ./api-gateway
+  ports:
+    - "8080:8080"
+  depends_on:
+    - account-service
+    - travel-plan-service
+    - travel-plan-search-service
+    - travel-discovery-service

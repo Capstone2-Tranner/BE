@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: account-service
+          uri: http://account-service:8081
+          predicates:
+            - Path=/account/**
+        - id: travel-plan-service
+          uri: http://travel-plan-service:8082
+          predicates:
+            - Path=/plan/**
+        - id: travel-plan-search-service
+          uri: http://travel-plan-search-service:8083
+          predicates:
+            - Path=/search/**
+        - id: travel-discovery-service
+          uri: http://travel-discovery-service:8084
+          predicates:
+            - Path=/discovery/**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: ${JWT_SECRET_KEY}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
