@@ -1,0 +1,21 @@
+package com.tranner.account_service.util;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+public class TokenExtractor {
+
+    public String extractToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer ")) {
+            // 토큰 존재 X 예외 발생시키기
+            //throw new CustomAuthException("토큰이 존재하지 않거나 형식이 올바르지 않습니다.");
+        }
+        return header.split(" ")[1]; // 또는 substring(7)
+    }
+
+    public String extractUsername(HttpServletRequest request, JwtUtil jwtUtil) {
+        String token = extractToken(request);
+        return jwtUtil.getUsername(token);
+    }
+
+}
