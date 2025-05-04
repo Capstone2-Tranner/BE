@@ -16,6 +16,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$/api-gateway" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/api-gateway" />
           </set>
         </option>
