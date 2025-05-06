@@ -1,6 +1,6 @@
 package com.tranner.account_service.repository;
 
-import com.tranner.account_service.entity.Member;
+import com.tranner.account_service.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

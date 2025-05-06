@@ -1,9 +1,9 @@
 package com.tranner.account_service.service;
 
 import com.tranner.account_service.dto.request.SignupRequestDTO;
-import com.tranner.account_service.entity.Member;
-import com.tranner.account_service.entity.MemberType;
-import com.tranner.account_service.entity.Role;
+import com.tranner.account_service.domain.Member;
+import com.tranner.account_service.domain.MemberType;
+import com.tranner.account_service.domain.Role;
 import com.tranner.account_service.exception.AccountErrorCode;
 import com.tranner.account_service.exception.custom.BusinessLogicException;
 import com.tranner.account_service.repository.MemberRepository;

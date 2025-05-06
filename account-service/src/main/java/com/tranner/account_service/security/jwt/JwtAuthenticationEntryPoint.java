@@ -1,4 +1,4 @@
-package com.tranner.account_service.security;
+package com.tranner.account_service.security.jwt;
 
 import com.tranner.account_service.exception.SecurityErrorCode;
 import com.tranner.account_service.util.LogUtil;

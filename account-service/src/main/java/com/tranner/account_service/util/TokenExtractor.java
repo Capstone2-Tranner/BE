@@ -1,5 +1,6 @@
 package com.tranner.account_service.util;
 
+import com.tranner.account_service.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class TokenExtractor {
@@ -15,7 +16,7 @@ public class TokenExtractor {
 
     public String extractUsername(HttpServletRequest request, JwtUtil jwtUtil) {
         String token = extractToken(request);
-        return jwtUtil.getUsername(token);
+        return jwtUtil.getMemberId(token);
     }
 
 }

@@ -39,24 +39,24 @@ public class MailService {
         sendEmail(email, "Trannere 인증코드", "인증 코드: " + code);
 
         // Redis에 인증 코드 저장 (TTL: 5분)
-        redisService.setDataWithExpiration("email:code:" + email, code, VERIFICATION_CODE_TTL);
+        redisService.saveEmailVerificationCode(email, code, VERIFICATION_CODE_TTL);
     }
 
     // 2. 인증코드 검증
     public Boolean checkVerificationCode(EmailVerificationRequestDTO requestDTO) {
 
-        String key = "email:code:" + requestDTO.memberEmail();
-        String storedCode = redisService.getData(key);
+        String email = requestDTO.memberEmail();
+        String storedCode = redisService.getEmailVerificationCode(email);
 
         if (storedCode == null) {
             throw new BusinessLogicException(AccountErrorCode.VERIFICATION_CODE_EXPIRED);
         }
 
         if (!storedCode.equals(requestDTO.verificationCode())) {
-            throw new BusinessLogicException(AccountErrorCode.INVALID_VERIFICATION_CODE);
+            throw new BusinessLogicException(AccountErrorCode.WRONG_VERIFICATION_CODE);
         }
 
-        redisService.deleteData(key); // 검증 후 제거
+        redisService.deleteEmailVerificationCode(email); // 검증 후 제거
 
         return true;
 

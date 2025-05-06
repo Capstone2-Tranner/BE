@@ -1,4 +1,4 @@
-package com.tranner.account_service.entity;
+package com.tranner.account_service.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -12,16 +12,52 @@ public class RedisService {
 
     private final StringRedisTemplate redisTemplate;
 
-    public void setDataWithExpiration(String key, String value, long minutes) {
-        redisTemplate.opsForValue().set(key, value, Duration.ofMinutes(minutes));
+    private static final String REFRESH_TOKEN_PREFIX = "refresh:";
+    private static final String EMAIL_VERIFICATION_PREFIX = "verify:";
+
+    /** ===========================
+     *  Refresh Token 관련 메서드
+     *  =========================== */
+
+    public void saveRefreshToken(String memberId, String token, long expirationMinutes) {
+        redisTemplate.opsForValue().set(
+                REFRESH_TOKEN_PREFIX + memberId,
+                token,
+                Duration.ofMinutes(expirationMinutes)
+        );
     }
 
-    public String getData(String key) {
-        return redisTemplate.opsForValue().get(key);
+    public String getRefreshToken(String memberId) {
+        return redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + memberId);
     }
 
-    public void deleteData(String key) {
-        redisTemplate.delete(key);
+    public void deleteRefreshToken(String memberId) {
+        redisTemplate.delete(REFRESH_TOKEN_PREFIX + memberId);
+    }
+
+    public boolean isValidRefreshToken(String memberId, String token) {
+        String saved = getRefreshToken(memberId);
+        return saved != null && saved.equals(token);
+    }
+
+    /** ================================
+     *  이메일 인증 코드 관련 메서드
+     *  ================================ */
+
+    public void saveEmailVerificationCode(String email, String code, long expirationMinutes) {
+        redisTemplate.opsForValue().set(
+                EMAIL_VERIFICATION_PREFIX + email,
+                code,
+                Duration.ofMinutes(expirationMinutes)
+        );
+    }
+
+    public String getEmailVerificationCode(String email) {
+        return redisTemplate.opsForValue().get(EMAIL_VERIFICATION_PREFIX + email);
+    }
+
+    public void deleteEmailVerificationCode(String email) {
+        redisTemplate.delete(EMAIL_VERIFICATION_PREFIX + email);
     }
 }
 
