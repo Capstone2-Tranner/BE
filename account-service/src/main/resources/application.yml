@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: account-service
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}  # 기본값은 dev
+    include: oauth
+
+  datasource:
+    driver-class-name: ${DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}
+
+  jpa:
+    hibernate:
+      ddl-auto: none        # 공통은 안전하게 none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: ${JWT_SECRET_KEY}
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  access-token-validity: ${JWT_ACCESS_EXPIRE:3600}
+  refresh-token-validity: ${JWT_REFRESH_EXPIRE:604800}
