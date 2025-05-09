@@ -51,7 +51,7 @@ public class MemberController {
     }
     
     // 1-4. 인증코드 검증 요청
-    @PostMapping("/email/verifications/check")
+    @PostMapping("/email/verification/check")
     public ResponseEntity<Boolean> checkEmailVerification(@Valid @RequestBody EmailVerificationRequestDTO requestDTO) {
         Boolean response = mailService.checkVerificationCode(requestDTO);
         return ResponseEntity.ok().body(response);

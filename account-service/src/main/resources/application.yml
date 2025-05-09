@@ -24,7 +24,24 @@ spring:
         jwt:
           secret-key: ${JWT_SECRET_KEY}
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: choeunbin0324
+    password: sfmr bdjg wvjp skph
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-validity: ${JWT_ACCESS_EXPIRE:3600}
   refresh-token-validity: ${JWT_REFRESH_EXPIRE:604800}
+

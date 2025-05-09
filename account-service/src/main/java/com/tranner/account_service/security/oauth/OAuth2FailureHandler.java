@@ -35,6 +35,12 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
         // 2. 로그 찍기
         LogUtil.logError(log, request, errorCode, exception);
 
+        System.out.println("❌ OAuth2 Failure Handler invoked");
+        System.out.println("❌ Request URI: " + request.getRequestURI());
+        System.out.println("❌ Exception: " + exception.getClass().getName());
+        System.out.println("❌ Message: " + exception.getMessage());
+        exception.printStackTrace(); // ✅ stack trace도 찍어서 원인 정확히 파악
+
         // 3. 응답 처리
         ResponseUtil.writeErrorResponse(response, errorCode, request.getRequestURI());
     }

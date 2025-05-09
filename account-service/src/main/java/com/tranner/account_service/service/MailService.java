@@ -45,7 +45,7 @@ public class MailService {
     // 2. 인증코드 검증
     public Boolean checkVerificationCode(EmailVerificationRequestDTO requestDTO) {
 
-        String email = requestDTO.memberEmail();
+        String email = requestDTO.email();
         String storedCode = redisService.getEmailVerificationCode(email);
 
         if (storedCode == null) {

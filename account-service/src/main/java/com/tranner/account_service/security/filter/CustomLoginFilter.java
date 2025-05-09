@@ -29,7 +29,10 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         this.jwtUtil = jwtUtil;
 
         // 로그인 요청 URL 지정 (기본은 /login)
-        setFilterProcessesUrl("/account/login");
+        setFilterProcessesUrl("/api/account/login");
+
+        // 부모 필터에 authenticationManager 설정
+        setAuthenticationManager(authenticationManager);
     }
 
     // 로그인 시도: JSON 요청에서 ID/PW 추출 → 인증 시도
