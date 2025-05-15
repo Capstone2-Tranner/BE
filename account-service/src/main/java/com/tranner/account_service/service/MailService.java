@@ -3,7 +3,7 @@ package com.tranner.account_service.service;
 import com.tranner.account_service.dto.request.EmailVerificationRequestDTO;
 import com.tranner.account_service.exception.AccountErrorCode;
 import com.tranner.account_service.exception.custom.BusinessLogicException;
-import com.tranner.account_service.exception.custom.InterenalServerException;
+import com.tranner.account_service.exception.custom.InternalServerException;
 import com.tranner.account_service.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -76,7 +76,7 @@ public class MailService {
         try{
             emailSender.send(emailForm);
         }catch (RuntimeException e){
-            throw new InterenalServerException(AccountErrorCode.UNABLE_TO_SEND_EMAIL);
+            throw new InternalServerException(AccountErrorCode.UNABLE_TO_SEND_EMAIL);
         }
     }
     
