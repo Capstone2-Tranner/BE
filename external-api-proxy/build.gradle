@@ -1,0 +1,63 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.11'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.tranner'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-json'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient 사용
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' // 헬스체크 등
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation 'com.fasterxml.jackson.core:jackson-databind'          // JSON 응답 파싱
+
+
+	// aws s3 관련 dependency
+	implementation platform("software.amazon.awssdk:bom:2.25.24")
+	implementation 'software.amazon.awssdk:s3'
+	implementation 'software.amazon.awssdk:auth'
+	implementation 'software.amazon.awssdk:regions'
+
+	// image WebP 압축 관련 dependency
+	implementation "com.sksamuel.scrimage:scrimage-core:4.0.32"
+	implementation "com.sksamuel.scrimage:scrimage-webp:4.0.32"
+
+	// javax.annotaion 경고 해결용
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+
+
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
