@@ -1,2 +1,4 @@
 rootProject.name='Tranner_BE_2'
 include 'api-gateway'
+include 'account-service'
+include 'external-api-proxy'

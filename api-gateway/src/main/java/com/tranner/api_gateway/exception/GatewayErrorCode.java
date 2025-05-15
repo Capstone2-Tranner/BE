@@ -42,4 +42,5 @@ public enum GatewayErrorCode implements  ErrorCode{
     public String getService() {
         return service;
     }
+
 }

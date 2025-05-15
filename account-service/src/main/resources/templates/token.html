@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const token = new URLSearchParams(window.location.search).get("accessToken");
+
+    if (token) {
+      window.opener.postMessage({
+        accessToken: token,
+      }, "http://localhost:3000");
+
+      // URL 파라미터 제거 (보안상 깔끔하게)
+      window.history.replaceState({}, document.title, "/token");
+      window.close();
+    } else {
+      document.body.innerText = "토큰 없음!";
+    }
+</script>
+</body>
+</html>
