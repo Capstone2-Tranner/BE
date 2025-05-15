@@ -1,8 +1,8 @@
-package com.tranner.account_service.exception.handler;
+package com.tranner.external_api_proxy.exception.handler;
 
-import com.tranner.account_service.exception.custom.InternalServerException;
-import com.tranner.account_service.util.LogUtil;
-import com.tranner.account_service.util.ResponseUtil;
+import com.tranner.external_api_proxy.exception.custom.InternalServerException;
+import com.tranner.external_api_proxy.util.LogUtil;
+import com.tranner.external_api_proxy.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

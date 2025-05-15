@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: external-api-proxy
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}  # 기본값은 dev
+
+google:
+  maps:
+    api:
+      key: ${GOOGLE_PLACES_KEY}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${AWS_BUCKET_NAME}
