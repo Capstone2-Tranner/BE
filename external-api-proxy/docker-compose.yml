@@ -1,0 +1,13 @@
+version: "3"
+services:
+  external-api-proxy:
+    build:
+      context: .
+    ports:
+      - "8085:8085"
+    networks:
+      - tranner-network
+
+networks:
+  tranner-network:
+    external: true

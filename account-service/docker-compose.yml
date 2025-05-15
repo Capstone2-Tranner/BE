@@ -1,0 +1,13 @@
+version: "3"
+services:
+  account-service:
+    build:
+      context: .
+    ports:
+      - "8081:8081"
+    networks:
+      - tranner-network
+
+networks:
+  tranner-network:
+    external: true
