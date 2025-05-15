@@ -7,8 +7,8 @@ spring:
       uri: {MONGO_DB_URI}
 
   redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
+    host: redis
+    port: 6379
 
 logging:
   level:
