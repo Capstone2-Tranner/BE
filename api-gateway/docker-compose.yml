@@ -1,0 +1,13 @@
+version: "3"
+services:
+  api-gateway:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    networks:
+      - tranner-network
+
+networks:
+  tranner-network:
+    external: true

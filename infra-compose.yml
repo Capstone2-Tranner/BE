@@ -1,3 +1,4 @@
+# root/infra-compose.yml
 version: "3"
 services:
   mysql:
@@ -11,6 +12,8 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - tranner-network
 
   redis:
     image: redis:7-alpine
@@ -18,30 +21,6 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    networks:
-      - tranner-network
-
-  api-gateway:
-    build:
-      context: ./api-gateway
-    ports:
-      - "8080:8080"
-    networks:
-      - tranner-network
-
-  account-service:
-    build:
-      context: ./account-service
-    ports:
-      - "8081:8081"
-    networks:
-      - tranner-network
-
-  external-api-proxy:
-    build:
-      context: ./external-api-proxy
-    ports:
-      - "8085:8085"
     networks:
       - tranner-network
 
