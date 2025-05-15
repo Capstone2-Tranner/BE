@@ -1,36 +1,30 @@
 package com.tranner.api_gateway.exception.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tranner.api_gateway.exception.ErrorResponse;
 import com.tranner.api_gateway.exception.GatewayErrorCode;
 import com.tranner.api_gateway.util.LogUtil;
 import com.tranner.api_gateway.util.ResponseUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
-public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+public class JwtAccessDeniedHandler implements ServerAccessDeniedHandler {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAccessDeniedHandler.class);
 
     @Override
-    public void handle(HttpServletRequest request,
-                       HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException {
-        // 권한 거부 → 명확하게 FORBIDDEN 사용
+    public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
         GatewayErrorCode errorCode = GatewayErrorCode.FORBIDDEN;
 
-        // 로그 남기기
-        LogUtil.logError(log, request, errorCode, accessDeniedException);
-        // 에러 응답 보내기
-        ResponseUtil.writeErrorResponse(response, errorCode, request.getRequestURI());
+        LogUtil.logError(log, exchange.getRequest(), errorCode, denied);
+        return ResponseUtil.writeErrorResponse(exchange.getResponse(), errorCode, exchange.getRequest().getURI().getPath());
     }
-
 }
