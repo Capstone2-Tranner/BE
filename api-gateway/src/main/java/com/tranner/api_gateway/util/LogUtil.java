@@ -1,18 +1,20 @@
 package com.tranner.api_gateway.util;
 
 import com.tranner.api_gateway.exception.ErrorCode;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
 public class LogUtil {
 
-    public static void logError(Logger logger, HttpServletRequest request, ErrorCode errorCode, Throwable ex) {
+    public static void logError(Logger logger, ServerHttpRequest request, ErrorCode errorCode, Throwable ex) {
+        String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
+        String path = request.getURI().getPath();
+
         if (ex != null) {
             logger.error("[ERROR {}] {} {} | code={}, message={}, exception={}",
                     errorCode.getService(),
-                    request.getMethod(),
-                    request.getRequestURI(),
+                    method,
+                    path,
                     errorCode.getCode(),
                     errorCode.getMessage(),
                     ex.getMessage()
@@ -20,20 +22,23 @@ public class LogUtil {
         } else {
             logger.error("[ERROR {}] {} {} | code={}, message={}",
                     errorCode.getService(),
-                    request.getMethod(),
-                    request.getRequestURI(),
+                    method,
+                    path,
                     errorCode.getCode(),
                     errorCode.getMessage()
             );
         }
     }
 
-    public static void logWarn(Logger logger, HttpServletRequest request, ErrorCode errorCode, Throwable ex) {
+    public static void logWarn(Logger logger, ServerHttpRequest request, ErrorCode errorCode, Throwable ex) {
+        String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
+        String path = request.getURI().getPath();
+
         if (ex != null) {
             logger.warn("[WARN {}] {} {} | code={}, message={}, exception={}",
                     errorCode.getService(),
-                    request.getMethod(),
-                    request.getRequestURI(),
+                    method,
+                    path,
                     errorCode.getCode(),
                     errorCode.getMessage(),
                     ex.getMessage()
@@ -41,8 +46,8 @@ public class LogUtil {
         } else {
             logger.warn("[WARN {}] {} {} | code={}, message={}",
                     errorCode.getService(),
-                    request.getMethod(),
-                    request.getRequestURI(),
+                    method,
+                    path,
                     errorCode.getCode(),
                     errorCode.getMessage()
             );
@@ -59,5 +64,4 @@ public class LogUtil {
             logger.info("[GATEWAY] {} {} took {}ms", method, uri, duration);
         }
     }
-
 }
