@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [account-service, api-gateway, eureka-server]  # 너 프로젝트의 모듈 이름들
+        service: [account-service, api-gateway, eureka-server, external-api-proxy]  # 너 프로젝트의 모듈 이름들
 
     env:
       AWS_REGION: ap-northeast-2
