@@ -1,12 +1,15 @@
-# 1. Base image
+# 공통 Dockerfile (예: 모듈마다 복붙해서 사용)
 FROM openjdk:17-jdk-slim
+WORKDIR /app
 
-# 2. JAR 파일을 복사
-ARG JAR_FILE=build/libs/external-api-proxy-0.0.1-SNAPSHOT.jar
+# JAR 복사
+ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 
-# 3. 포트 노출
+# 포트는 각자 다름 (예: 8080, 8761 등)
 EXPOSE 8085
 
-# 4. 애플리케이션 실행
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# 실행
+ENTRYPOINT ["java", "-jar"]
+CMD ["app.jar"]
+
