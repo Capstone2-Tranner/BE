@@ -1,24 +1,36 @@
 server:
   port: 8080
 
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.hostname}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 spring:
+  application:
+    name: api-gateway
+
   cloud:
     gateway:
       routes:
         - id: account-service
-          uri: http://account-service:8081
+          uri: lb://account-service
           predicates:
             - Path=/account/**
         - id: travel-plan-service
-          uri: http://travel-plan-service:8082
+          uri: lb://travel-plan-service
           predicates:
             - Path=/plan/**
         - id: travel-plan-search-service
-          uri: http://travel-plan-search-service:8083
+          uri: lb://travel-plan-search-service
           predicates:
             - Path=/search/**
         - id: travel-discovery-service
-          uri: http://travel-discovery-service:8084
+          uri: lb://travel-discovery-service
           predicates:
             - Path=/discovery/**
 
