@@ -70,65 +70,38 @@ jobs:
         run: |
           docker push ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
 
-      - name: Download base task definition
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition ${{ matrix.service }}-task \
-            --query 'taskDefinition' \
-            --output json > task-definition.json
-
-      - name: Replace image URL and trim fields
-        run: |
-          IMAGE="${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG"
-          jq --arg image "$IMAGE" '
-          {
-            family,
-            networkMode,
-            containerDefinitions: [
-              {
-                name: .containerDefinitions[0].name,
-                image: $image,
-                essential: .containerDefinitions[0].essential,
-                portMappings: .containerDefinitions[0].portMappings
-              }
-              + (if .containerDefinitions[0].environment then {environment: .containerDefinitions[0].environment} else {} end)
-                + (if .containerDefinitions[0].logConfiguration then {logConfiguration: .containerDefinitions[0].logConfiguration} else {} end)
-            ],
-            requiresCompatibilities,
-            cpu,
-            memory
-          }
-          + (if (.taskRoleArn != null and .taskRoleArn != "") then {taskRoleArn} else {} end)
-          + (if (.executionRoleArn != null and .executionRoleArn != "") then {executionRoleArn} else {} end)
-          ' task-definition.json > new-task-def.json
-
-
-      - name: Register new task definition
-        id: register-task-def
-        run: |
-          aws ecs register-task-definition \
-            --cli-input-json file://new-task-def.json > output.json
-          echo "TASK_DEF_ARN=$(jq -r '.taskDefinition.taskDefinitionArn' output.json)" >> $GITHUB_ENV
-
-      - name: Update ECS service with new task definition
-        run: |
-          aws ecs update-service \
-            --cluster tranner-cluster \
-            --service ${{ matrix.service }}-service \
-            --task-definition $TASK_DEF_ARN
-
-
 #      - name: Download base task definition
 #        run: |
 #          aws ecs describe-task-definition \
 #            --task-definition ${{ matrix.service }}-task \
 #            --query 'taskDefinition' \
-#            > task-definition.json
+#            --output json > task-definition.json
 #
-#      - name: Replace image URL
+#      - name: Replace image URL and trim fields
 #        run: |
 #          IMAGE="${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG"
-#          jq --arg img "$IMAGE" '.containerDefinitions[0].image = $img' task-definition.json > new-task-def.json
+#          jq --arg image "$IMAGE" '
+#          {
+#            family,
+#            networkMode,
+#            containerDefinitions: [
+#              {
+#                name: .containerDefinitions[0].name,
+#                image: $image,
+#                essential: .containerDefinitions[0].essential,
+#                portMappings: .containerDefinitions[0].portMappings
+#              }
+#              + (if .containerDefinitions[0].environment then {environment: .containerDefinitions[0].environment} else {} end)
+#                + (if .containerDefinitions[0].logConfiguration then {logConfiguration: .containerDefinitions[0].logConfiguration} else {} end)
+#            ],
+#            requiresCompatibilities,
+#            cpu,
+#            memory
+#          }
+#          + (if (.taskRoleArn != null and .taskRoleArn != "") then {taskRoleArn} else {} end)
+#          + (if (.executionRoleArn != null and .executionRoleArn != "") then {executionRoleArn} else {} end)
+#          ' task-definition.json > new-task-def.json
+#
 #
 #      - name: Register new task definition
 #        id: register-task-def
@@ -143,3 +116,5 @@ jobs:
 #            --cluster tranner-cluster \
 #            --service ${{ matrix.service }}-service \
 #            --task-definition $TASK_DEF_ARN
+
+
