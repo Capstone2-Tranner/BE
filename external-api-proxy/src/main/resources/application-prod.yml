@@ -7,7 +7,7 @@ spring:
       uri: {MONGO_DB_URI}
 
   redis:
-    host: host.docker.internal
+    host: 10.0.1.193
     port: 6379
 
 logging:
