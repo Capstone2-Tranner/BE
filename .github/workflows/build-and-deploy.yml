@@ -21,35 +21,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check changes
-        id: changes
-        run: |
-          echo "CHANGED=false" >> $GITHUB_ENV
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "${{ matrix.service }}/"; then
-            echo "CHANGED=true" >> $GITHUB_ENV
-          fi
+#      - name: Check changes
+#        id: changes
+#        run: |
+#          echo "CHANGED=false" >> $GITHUB_ENV
+#          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "${{ matrix.service }}/"; then
+#            echo "CHANGED=true" >> $GITHUB_ENV
+#          fi
 
       - name: Skip if no change
-        if: env.CHANGED == 'false'
+#        if: env.CHANGED == 'false'
         run: echo "No changes in ${{ matrix.service }}. Skipping..."
 
       - name: Set up JDK 17
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Grant execute permission to Gradle
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: chmod +x gradlew
 
       - name: Build JAR for ${{ matrix.service }}
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: ./gradlew :${{ matrix.service }}:bootJar -x test
 
       - name: Configure AWS credentials
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -57,22 +57,22 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build and tag Docker image
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: |
           docker build -t ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG ./${{ matrix.service }}
 
       - name: Push to ECR
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: |
           docker tag ${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-$IMAGE_TAG ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
           docker push ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
 
       - name: Download base task definition
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: |
           aws ecs describe-task-definition \
             --task-definition ${{ matrix.service }}-task \
@@ -80,7 +80,7 @@ jobs:
             > task-definition.json
 
       - name: Replace image URL
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
 #        run: |
 #          jq '.containerDefinitions[0].image = "${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG"' \
 #          task-definition.json > new-task-def.json
@@ -90,14 +90,14 @@ jobs:
 
       - name: Register new task definition
         id: register-task-def
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: |
           aws ecs register-task-definition \
             --cli-input-json file://new-task-def.json > output.json
           echo "TASK_DEF_ARN=$(jq -r '.taskDefinition.taskDefinitionArn' output.json)" >> $GITHUB_ENV
 
       - name: Update ECS service with new task definition
-        if: env.CHANGED == 'true'
+#        if: env.CHANGED == 'true'
         run: |
           aws ecs update-service \
             --cluster tranner-cluster \
