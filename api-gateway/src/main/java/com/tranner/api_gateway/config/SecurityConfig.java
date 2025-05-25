@@ -42,14 +42,21 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/account/login", "/account/signup").permitAll()
+                        .pathMatchers("/login/**", "/oauth2/**", "/login/success",
+                                "/api/account/login", "/api/account/signup",
+                                "/api/account/idDuplicatedCheck", "/api/account/email/verification",
+                                "/api/account/email/verification/check").permitAll()
                         .anyExchange().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
-                .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt)
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(jwt -> {
+                            // 여기에 커스텀 설정이 필요하면 작성
+                        })
+                )
                 .build();
     }
 

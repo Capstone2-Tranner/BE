@@ -4,7 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/external-api-db
+      uri: mongodb://${HOST}:27017/external-api-db
 
   redis:
     host: 10.0.1.193
