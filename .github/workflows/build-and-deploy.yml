@@ -12,9 +12,12 @@ jobs:
         service: [account-service, api-gateway, eureka-server, external-api-proxy]  # 너 프로젝트의 모듈 이름들
 
     env:
-      IMAGE_TAG: ${{ github.sha }}
+      ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
 
     steps:
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${{ github.ref_name }}-$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -23,7 +26,7 @@ jobs:
         run: |
           echo "CHANGED=false" >> $GITHUB_ENV
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "${{ matrix.service }}/"; then
-          echo "CHANGED=true" >> $GITHUB_ENV
+            echo "CHANGED=true" >> $GITHUB_ENV
           fi
 
       - name: Skip if no change
@@ -60,13 +63,13 @@ jobs:
       - name: Build and tag Docker image
         if: env.CHANGED == 'true'
         run: |
-          docker build -t ${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-${{ env.IMAGE_TAG }} ./${{ matrix.service }}
+          docker build -t ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG ./${{ matrix.service }}
 
       - name: Push to ECR
         if: env.CHANGED == 'true'
         run: |
-          docker tag ${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-${{ env.IMAGE_TAG }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-${{ env.IMAGE_TAG }}
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-${{ env.IMAGE_TAG }}
+          docker tag ${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-$IMAGE_TAG ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
+          docker push ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
 
       - name: Download base task definition
         if: env.CHANGED == 'true'
@@ -78,9 +81,12 @@ jobs:
 
       - name: Replace image URL
         if: env.CHANGED == 'true'
+#        run: |
+#          jq '.containerDefinitions[0].image = "${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG"' \
+#          task-definition.json > new-task-def.json
         run: |
-          jq '.containerDefinitions[0].image = "${{ secrets.ECR_URI }}:${{ matrix.service }}-${{ github.sha }}"' \
-          task-definition.json > new-task-def.json
+          IMAGE="${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG"
+          jq --arg img "$IMAGE" '.containerDefinitions[0].image = $img' task-definition.json > new-task-def.json
 
       - name: Register new task definition
         id: register-task-def
@@ -96,4 +102,4 @@ jobs:
           aws ecs update-service \
             --cluster tranner-cluster \
             --service ${{ matrix.service }}-service \
-            --task-definition ${{ env.TASK_DEF_ARN }}
+            --task-definition $TASK_DEF_ARN
