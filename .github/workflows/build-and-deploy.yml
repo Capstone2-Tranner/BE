@@ -81,26 +81,27 @@ jobs:
         run: |
           IMAGE="${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG"
           jq --arg image "$IMAGE" '
-            {
-              family,
-              networkMode,
-              containerDefinitions: [
-                .containerDefinitions[0] | {
-                  name,
-                  image: $image,
-                  essential,
-                  portMappings,
-                  environment?,
-                  logConfiguration?
-                }
-              ],
-              requiresCompatibilities,
-              cpu,
-              memory
-            }
-            + (if (.taskRoleArn != null and .taskRoleArn != "") then {taskRoleArn} else {} end)
-            + (if (.executionRoleArn != null and .executionRoleArn != "") then {executionRoleArn} else {} end)
+          {
+            family,
+            networkMode,
+            containerDefinitions: [
+              {
+                name: .containerDefinitions[0].name,
+                image: $image,
+                essential: .containerDefinitions[0].essential,
+                portMappings: .containerDefinitions[0].portMappings
+              }
+              + (if .containerDefinitions[0].environment then {environment: .containerDefinitions[0].environment} else {} end)
+                + (if .containerDefinitions[0].logConfiguration then {logConfiguration: .containerDefinitions[0].logConfiguration} else {} end)
+            ],
+            requiresCompatibilities,
+            cpu,
+            memory
+          }
+          + (if (.taskRoleArn != null and .taskRoleArn != "") then {taskRoleArn} else {} end)
+          + (if (.executionRoleArn != null and .executionRoleArn != "") then {executionRoleArn} else {} end)
           ' task-definition.json > new-task-def.json
+
 
       - name: Register new task definition
         id: register-task-def
