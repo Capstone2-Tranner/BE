@@ -68,7 +68,6 @@ jobs:
       - name: Push to ECR
 #        if: env.CHANGED == 'true'
         run: |
-#          docker tag ${{ secrets.ECR_REPOSITORY }}:${{ matrix.service }}-$IMAGE_TAG ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
           docker push ${{ env.ECR_URI }}:${{ matrix.service }}-$IMAGE_TAG
 
       - name: Download base task definition
