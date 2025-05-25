@@ -38,7 +38,7 @@ public class MemberController {
     // 1-2. 아이디 중복 체크
     // return: 중복 -> true
     @GetMapping("/idDuplicatedCheck")
-    public ResponseEntity<Boolean> idDuplicatedCheck(@RequestParam String id){
+    public ResponseEntity<Boolean> idDuplicatedCheck(@RequestParam("id") String id){
         boolean response =  memberService.idDuplicatedCheck(id);
         return ResponseEntity.ok().body(response);
     }
