@@ -20,19 +20,19 @@ spring:
         - id: account-service
           uri: lb://account-service
           predicates:
-            - Path=/account/**
+            - Path=/api/account/**
         - id: travel-plan-service
           uri: lb://travel-plan-service
           predicates:
-            - Path=/plan/**
+            - Path=/api/plan/**
         - id: travel-plan-search-service
           uri: lb://travel-plan-search-service
           predicates:
-            - Path=/search/**
+            - Path=/api/search/**
         - id: travel-discovery-service
           uri: lb://travel-discovery-service
           predicates:
-            - Path=/discovery/**
+            - Path=/api/discovery/**
 
   security:
     oauth2:
