@@ -8,7 +8,7 @@ spring:
     password: ${PROD_DB_PASSWORD}
 
   redis:
-    host: 10.0.1.193
+    host: host.docker.internal
     port: 6379
     timeout: 5000
     lettuce:
