@@ -83,8 +83,6 @@ jobs:
           jq --arg image "$IMAGE" '
             {
               family,
-              taskRoleArn,
-              executionRoleArn,
               networkMode,
               containerDefinitions: [
                 .containerDefinitions[0] | {
@@ -92,14 +90,16 @@ jobs:
                   image: $image,
                   essential,
                   portMappings,
-                  environment,
-                  logConfiguration
+                  environment?,
+                  logConfiguration?
                 }
               ],
               requiresCompatibilities,
               cpu,
               memory
             }
+            + (if (.taskRoleArn != null and .taskRoleArn != "") then {taskRoleArn} else {} end)
+            + (if (.executionRoleArn != null and .executionRoleArn != "") then {executionRoleArn} else {} end)
           ' task-definition.json > new-task-def.json
 
       - name: Register new task definition
