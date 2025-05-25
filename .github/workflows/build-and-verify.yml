@@ -17,23 +17,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check changes
+      - name: Check if service has changed
         id: changes
         run: |
-          echo "CHANGED=false" >> $GITHUB_ENV
           if git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep "${{ matrix.service }}/"; then
-            echo "CHANGED=true" >> $GITHUB_ENV
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
+        shell: bash
 
       - name: Set up JDK
-        if: env.CHANGED == 'true'
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Export secrets for ${{ matrix.service }}
-        if: env.CHANGED == 'true'
+        if: steps.changes.outputs.changed == 'true'
         run: |
           echo "HOST=${{ secrets.HOST }}" >> $GITHUB_ENV
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
@@ -41,12 +43,13 @@ jobs:
           echo "PROD_DB_USERNAME=${{ secrets.PROD_DB_USERNAME }}" >> $GITHUB_ENV
           echo "PROD_DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}" >> $GITHUB_ENV
           echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
           echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> $GITHUB_ENV
           echo "GOOGLE_PLACES_KEY=${{ secrets.GOOGLE_PLACES_KEY }}" >> $GITHUB_ENV
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
           echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> $GITHUB_ENV
 
-      - name: Build JAR for ${{ matrix.service }}
-        if: env.CHANGED == 'true'
+      - name: Run tests for ${{ matrix.service }}
+        if: steps.changes.outputs.changed == 'true'
         run: ./gradlew :${{ matrix.service }}:test
