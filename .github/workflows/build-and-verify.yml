@@ -1,0 +1,37 @@
+name: Verify Changed Services
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  verify-services:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [account-service, api-gateway, eureka-server, external-api-proxy]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check changes
+        id: changes
+        run: |
+          echo "CHANGED=false" >> $GITHUB_ENV
+          if git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep "${{ matrix.service }}/"; then
+            echo "CHANGED=true" >> $GITHUB_ENV
+          fi
+
+      - name: Set up JDK
+        if: env.CHANGED == 'true'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build JAR for ${{ matrix.service }}
+        if: env.CHANGED == 'true'
+        run: ./gradlew :${{ matrix.service }}:test
