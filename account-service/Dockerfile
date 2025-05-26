@@ -9,5 +9,5 @@ COPY build/libs/*SNAPSHOT.jar app.jar
 EXPOSE 8081
 
 # 실행
-ENTRYPOINT ["java", "-jar"]
-CMD ["app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+#CMD ["app.jar"]
