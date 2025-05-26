@@ -7,7 +7,7 @@ spring:
       uri: mongodb://${HOST}:27017/external-api-db
 
   redis:
-    host: 10.0.1.193
+    host: ${REDIS_HOST}
     port: 6379
 
 
