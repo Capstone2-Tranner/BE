@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -76,12 +77,21 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         // refresh token 발급
         String refreshToken = jwtUtil.createRefreshToken(memberId);
 
+        response.addHeader("Authorization", "Bearer " + accessToken);
+        // memberId reponse에 추가
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("memberId", memberId);
+
+        //응답 보내기
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+
 //        // 예: accessToken은 응답 바디에, refreshToken은 HttpOnly 쿠키로
 //        response.getWriter().write(new ObjectMapper().writeValueAsString(Map.of(
 //                "accessToken", accessToken
 //        )));
 //        response.addHeader("Set-Cookie", "refreshToken=" + refreshToken + "; HttpOnly; Path=/; Max-Age=604800");
-        response.sendRedirect("/login/success?accessToken=" + accessToken);
     }
 
     // 로그인 실패 처리
