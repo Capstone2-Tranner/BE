@@ -2,8 +2,11 @@ package com.tranner.account_service.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tranner.account_service.dto.request.LoginRequestDTO;
+import com.tranner.account_service.exception.AccountErrorCode;
+import com.tranner.account_service.exception.SecurityErrorCode;
 import com.tranner.account_service.security.jwt.JwtUtil;
 import com.tranner.account_service.security.user.CustomUserDetails;
+import com.tranner.account_service.util.ResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,7 +45,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             LoginRequestDTO loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDTO.class);
 
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(loginRequest.memberId(), loginRequest.password());
+                    new UsernamePasswordAuthenticationToken(loginRequest.memberId(), loginRequest.password(), null);
 
             return authenticationManager.authenticate(authToken); // 여기서 인증 프로세스 시작
         } catch (IOException e) {
@@ -78,6 +81,7 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 //                "accessToken", accessToken
 //        )));
 //        response.addHeader("Set-Cookie", "refreshToken=" + refreshToken + "; HttpOnly; Path=/; Max-Age=604800");
+        response.sendRedirect("/login/success?accessToken=" + accessToken);
     }
 
     // 로그인 실패 처리
@@ -85,5 +89,6 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException {
         // 로그인 실패 error response
+        ResponseUtil.writeErrorResponse(response, AccountErrorCode.FAILED_LOGIN, request.getRequestURI());
     }
 }
