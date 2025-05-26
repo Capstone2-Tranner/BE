@@ -22,6 +22,14 @@ spring:
           uri: lb://account-service
           predicates:
             - Path=/api/account/**
+        - id: account-service-oauth2
+          uri: lb://account-service
+          predicates:
+            - Path=/oauth2/authorization/**
+        - id: account-service-login
+          uri: lb://account-service
+          predicates:
+            - Path=/login/**
         - id: travel-plan-service
           uri: lb://travel-plan-service
           predicates:
