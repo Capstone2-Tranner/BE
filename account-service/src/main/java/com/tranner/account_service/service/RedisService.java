@@ -1,12 +1,15 @@
 package com.tranner.account_service.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RedisService {
 
@@ -14,6 +17,20 @@ public class RedisService {
 
     private static final String REFRESH_TOKEN_PREFIX = "refresh:";
     private static final String EMAIL_VERIFICATION_PREFIX = "verify:";
+
+
+    @PostConstruct
+    public void logRedisConnectionInfo() {
+        try {
+            // 실제 Redis 커넥션 팩토리에서 host 정보 확인
+            Object connectionFactory = redisTemplate.getConnectionFactory();
+            if (connectionFactory instanceof org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory factory) {
+                log.info("🔍 Redis 연결 정보 - host: {}, port: {}", factory.getHostName(), factory.getPort());
+            }
+        } catch (Exception e) {
+            log.error("❌ Redis 연결 정보 확인 실패", e);
+        }
+    }
 
     /** ===========================
      *  Refresh Token 관련 메서드

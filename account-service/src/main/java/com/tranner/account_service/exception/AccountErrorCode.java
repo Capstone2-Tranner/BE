@@ -30,6 +30,9 @@ public enum AccountErrorCode implements ErrorCode {
     // JPA 관련
     DB_ERROR(500, "SYS003", "데이터 저장 중 오류가 발생했습니다.", "ACCOUNT"),
 
+    //REDIS 관련
+    REDIS_FAILED(503, "RDS001", "REDIS 연동에 문제가 발생했습니다.", "ACCOUNT"),
+
     // 기타
     MISSING_FIELD(400, "CLT000", "필수 값을 입력해주세요.", "COMMON")
     ;

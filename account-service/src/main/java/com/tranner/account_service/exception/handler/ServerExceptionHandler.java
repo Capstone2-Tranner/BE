@@ -1,5 +1,6 @@
 package com.tranner.account_service.exception.handler;
 
+import com.tranner.account_service.exception.AccountErrorCode;
 import com.tranner.account_service.exception.custom.InternalServerException;
 import com.tranner.account_service.util.LogUtil;
 import com.tranner.account_service.util.ResponseUtil;
@@ -31,14 +32,14 @@ public class ServerExceptionHandler {
     }
 
     @ExceptionHandler(RedisConnectionFailureException.class)
-    public ResponseEntity<?> handleRedisConnectionFailure(RedisConnectionFailureException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(Map.of(
-                        "status", 503,
-                        "code", "REDIS001",
-                        "message", "Redis 서버에 연결할 수 없습니다. 관리자에게 문의하세요.",
-                        "detail", ex.getMessage()
-                ));
+    public void handleRedisConnectionFailure(HttpServletRequest request,
+                                             HttpServletResponse response,
+                                             RedisConnectionFailureException ex) throws IOException {
+        // 로그 남기기
+        LogUtil.logError(log, request, AccountErrorCode.REDIS_FAILED, ex);
+
+        // 에러 응답 보내기
+        ResponseUtil.writeErrorResponse(response, AccountErrorCode.REDIS_FAILED, request.getRequestURI());
     }
     
 }
