@@ -1,10 +1,7 @@
 package com.tranner.account_service.controller;
 
 
-import com.tranner.account_service.dto.request.DeleteBasketRequestDTO;
-import com.tranner.account_service.dto.request.EmailVerificationRequestDTO;
-import com.tranner.account_service.dto.request.InsertBasketRequestDTO;
-import com.tranner.account_service.dto.request.SignupRequestDTO;
+import com.tranner.account_service.dto.request.*;
 import com.tranner.account_service.dto.response.BasketResponseDTO;
 import com.tranner.account_service.security.jwt.JwtUtil;
 import com.tranner.account_service.service.BasketService;
@@ -56,8 +53,8 @@ public class MemberController {
     
     // 1-3. 인증코드 전송 요청
     @PostMapping("/email/verification")
-    public ResponseEntity<Void> emailVerification(@RequestBody Map<String,String> request) {
-        mailService.sendCodeToEmail(request.get("email"));
+    public ResponseEntity<Void> emailVerification(@Valid @RequestBody EmailOnlyRequestDTO requestDTO) {
+        mailService.sendCodeToEmail(requestDTO.email());
         return ResponseEntity.ok().build();
     }
     
