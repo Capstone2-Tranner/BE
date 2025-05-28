@@ -1,8 +1,8 @@
 package com.tranner.account_service.security.oauth;
 
 import com.tranner.account_service.domain.Member;
-import com.tranner.account_service.domain.MemberType;
-import com.tranner.account_service.domain.Role;
+import com.tranner.account_service.type.MemberType;
+import com.tranner.account_service.type.Role;
 import lombok.Builder;
 import lombok.Getter;
 

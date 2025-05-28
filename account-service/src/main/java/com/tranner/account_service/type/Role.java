@@ -1,4 +1,4 @@
-package com.tranner.account_service.domain;
+package com.tranner.account_service.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

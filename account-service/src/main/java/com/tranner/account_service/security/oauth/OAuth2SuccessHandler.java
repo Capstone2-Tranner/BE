@@ -1,6 +1,6 @@
 package com.tranner.account_service.security.oauth;
 
-import com.tranner.account_service.domain.Role;
+import com.tranner.account_service.type.Role;
 import com.tranner.account_service.security.jwt.JwtUtil;
 import com.tranner.account_service.service.RedisService;
 import jakarta.servlet.ServletException;
