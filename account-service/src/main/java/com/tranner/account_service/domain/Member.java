@@ -1,5 +1,7 @@
 package com.tranner.account_service.domain;
 
+import com.tranner.account_service.type.MemberType;
+import com.tranner.account_service.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
