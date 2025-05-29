@@ -81,8 +81,8 @@ public class MemberController {
     public ResponseEntity<BasketResponseDTO> readBasket(HttpServletRequest request,
                                                         @RequestParam("countryName") String countryName,
                                                         @RequestParam("regionName") String regionName){
-        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        String memberId = "testUser01";
+        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = "testUser01";
         BasketResponseDTO basketResponseDTO = basketService.readBasket(memberId, countryName, regionName);
         return ResponseEntity.ok().body(basketResponseDTO);
     }
@@ -91,8 +91,8 @@ public class MemberController {
     @PostMapping("/basket/insert")
     public ResponseEntity<String> insertBasket(HttpServletRequest request,
                                              @RequestBody InsertBasketRequestDTO insertBasketRequestDTO){
-        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        String memberId = "testUser01";
+        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = "testUser01";
         // 저장 로직 수행
         basketService.insertBasket(memberId,insertBasketRequestDTO);
         return ResponseEntity.ok("장바구니에 장소 저장 성공");
@@ -102,8 +102,8 @@ public class MemberController {
     @PostMapping("/basket/delete")
     public ResponseEntity<String> deleteBasket(HttpServletRequest request,
                                              @RequestBody DeleteBasketRequestDTO deleteBasketRequestDTO){
-        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        String memberId = "testUser01";
+        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = "testUser01";
         // 삭제 로직 수행
         basketService.deleteBasket(memberId,deleteBasketRequestDTO);
         return ResponseEntity.ok("장바구니에서 장소 삭제 성공");

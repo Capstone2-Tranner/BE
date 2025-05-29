@@ -13,4 +13,6 @@ public class TokenController {
         model.addAttribute("token", accessToken);
         return "token"; // templates/token.html 렌더링
     }
+
+    //access token 재발급
 }
