@@ -24,8 +24,8 @@ public enum AccountErrorCode implements ErrorCode {
 
 
     // 비밀번호 관련
-    PASSWORD_MISMATCH(401, "A003", "비밀번호가 일치하지 않습니다.", "ACCOUNT"),
-    INVALID_PASSWORD(400, "CLT011", "비밀번호는 영문자, 숫자, 특수문자를 포함한 8~20자리여야 합니다.", "ACCOUNT"),
+    PASSWORD_MISMATCH(401, "CLT011", "비밀번호가 일치하지 않습니다.", "ACCOUNT"),
+    INVALID_PASSWORD(400, "CLT013", "비밀번호는 영문자, 숫자, 특수문자를 포함한 8~20자리여야 합니다.", "ACCOUNT"),
 
     // JPA 관련
     DB_ERROR(500, "SYS003", "데이터 저장 중 오류가 발생했습니다.", "ACCOUNT"),

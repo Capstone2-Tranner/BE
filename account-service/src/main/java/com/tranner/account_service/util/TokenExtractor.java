@@ -2,7 +2,9 @@ package com.tranner.account_service.util;
 
 import com.tranner.account_service.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TokenExtractor {
 
     public String extractToken(HttpServletRequest request) {
@@ -14,7 +16,7 @@ public class TokenExtractor {
         return header.split(" ")[1]; // 또는 substring(7)
     }
 
-    public String extractUsername(HttpServletRequest request, JwtUtil jwtUtil) {
+    public String extractMemberId(HttpServletRequest request, JwtUtil jwtUtil) {
         String token = extractToken(request);
         return jwtUtil.getMemberId(token);
     }

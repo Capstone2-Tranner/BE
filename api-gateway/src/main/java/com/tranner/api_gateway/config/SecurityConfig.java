@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(cors -> cors.configurationSource(exchange -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("https://www.tranner.com", "http://localhost:3000", "http://localhost:5173", "https://fe-two-amber.vercel.app/"));
+                    config.setAllowedOrigins(List.of("https://www.tranner.com", "http://localhost:3000", "http://localhost:5173", "https://fe-two-amber.vercel.app"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .pathMatchers("/login/**", "/oauth2/**", "/login/success",
                                 "/api/account/login", "/api/account/signup",
                                 "/api/account/idDuplicatedCheck", "/api/account/email/verification",
-                                "/api/account/email/verification/check").permitAll()
+                                "/api/account/email/verification/check", "/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .exceptionHandling(ex -> ex
