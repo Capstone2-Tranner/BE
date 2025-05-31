@@ -31,16 +31,20 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // 1. registrationId: 소셜 로그인 제공자 구분 (google, kakao 등)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        System.out.println("🔥 registrationId = " + registrationId);
 
         // 2. userNameAttributeName: OAuth2 제공자의 사용자 식별 키 (예: google - "sub", kakao - "id")
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
+        System.out.println("🔥 userNameAttributeName = " + userNameAttributeName);
 
         // 3. OAuth2 사용자 정보 파싱
         Map<String, Object> attributes = oAuth2User.getAttributes();
         OAuthAttributes oAuthAttributes = OAuthAttributes.of(registrationId, userNameAttributeName, attributes);
+
+        System.out.println("🧩 attributes = " + attributes);
 
         // 4. 사용자 저장 또는 기존 사용자 조회
         Member member = saveOrUpdate(oAuthAttributes);
