@@ -40,6 +40,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String email = (String) kakaoAccount.get("email");
         String memberId = email.substring(0, email.indexOf("@"));
 
+        System.out.println("OAuth Success");
+
         // 1. Access Token 생성
         String accessToken = jwtUtil.createAccessToken(memberId, Role.USER.getKey());
 
@@ -61,6 +63,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         // 5. 토큰 포함해서 리다이렉트 (query param 또는 header)
         String redirectUri = REDIRECT_URI + "?accessToken=" + accessToken;
         redirectStrategy.sendRedirect(request, response, redirectUri);
+
+        System.out.println("MOVE TO REDIRECT");
     }
 }
 
