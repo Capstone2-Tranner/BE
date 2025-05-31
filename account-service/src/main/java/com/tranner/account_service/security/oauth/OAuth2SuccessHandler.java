@@ -28,7 +28,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final RedisService redisService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private static final String REDIRECT_URI = "/login/success";
+    private static final String REDIRECT_URI = "https://api.tranner.com/login/success";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -60,11 +60,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         response.addCookie(refreshTokenCookie);
 
+        System.out.println("MOVE TO REDIRECT");
         // 5. 토큰 포함해서 리다이렉트 (query param 또는 header)
         String redirectUri = REDIRECT_URI + "?accessToken=" + accessToken;
         redirectStrategy.sendRedirect(request, response, redirectUri);
 
-        System.out.println("MOVE TO REDIRECT");
     }
 }
 
