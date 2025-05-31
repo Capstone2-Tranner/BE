@@ -10,6 +10,7 @@ import com.tranner.account_service.security.oauth.CustomOAuth2UserService;
 import com.tranner.account_service.security.user.CustomUserDetailService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -26,6 +27,8 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenResolv
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 
 import java.util.List;
 
@@ -49,6 +52,17 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder);
         return builder.build();
     }
+
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setSameSite("None"); // OAuth2 리다이렉트 대응
+        serializer.setUseSecureCookie(true); // HTTPS에서 필수
+        serializer.setCookieName("JSESSIONID"); // 생략 가능 (기본값도 이거)
+        serializer.setCookiePath("/");
+        return serializer;
+    }
+
 
 
 
