@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -36,11 +37,21 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException, ServletException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
-        String email = (String) kakaoAccount.get("email");
+        String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+        String email;
+
+        if ("kakao".equals(registrationId)) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
+            email = (String) kakaoAccount.get("email");
+        } else if ("google".equals(registrationId)) {
+            email = (String) oAuth2User.getAttributes().get("email");
+        } else {
+            throw new RuntimeException("지원하지 않는 로그인 제공자입니다: " + registrationId);
+        }
+
         String memberId = email.substring(0, email.indexOf("@"));
 
-        System.out.println("OAuth Success");
+        System.out.println("OAuth Success: " + registrationId + " / " + email);
 
         // 1. Access Token 생성
         String accessToken = jwtUtil.createAccessToken(memberId, Role.USER.getKey());
