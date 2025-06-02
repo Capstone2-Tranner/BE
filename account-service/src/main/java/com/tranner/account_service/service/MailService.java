@@ -30,20 +30,25 @@ public class MailService {
 
     // 1. 인증코드 전송
     public void sendCodeToEmail(String email) {
+        System.out.println("Service: 인증코드 전송 진입");
         // 이미 등록된 이메일인지 확인
         if (memberRepository.existsByEmail(email)) {
             throw new BusinessLogicException(AccountErrorCode.DUPLICATE_EMAIL);
         }
         // 인증 코드 생성(랜덤 코드 생성)
-        String code = generateRandomCode(); 
+        String code = generateRandomCode();
+        System.out.println("생성된 인증코드: "+code);
         sendEmail(email, "Tranner 인증코드", "인증 코드: " + code);
 
+        System.out.println("인증코드 전송 완료 ");
         // Redis에 인증 코드 저장 (TTL: 5분)
         redisService.saveEmailVerificationCode(email, code, VERIFICATION_CODE_TTL);
+        System.out.println("redis에 저장 완료");
     }
 
     // 2. 인증코드 검증
     public Boolean checkVerificationCode(EmailVerificationRequestDTO requestDTO) {
+        System.out.println("Service: 인증코드 검증 진입");
 
         String email = requestDTO.email();
         String storedCode = redisService.getEmailVerificationCode(email);
@@ -74,6 +79,7 @@ public class MailService {
                           String text){
         SimpleMailMessage emailForm = createEmailForm(toEmail,title,text);
         try{
+            System.out.println("MailService의 sendEmail 진입");
             emailSender.send(emailForm);
         }catch (RuntimeException e){
             throw new InternalServerException(AccountErrorCode.UNABLE_TO_SEND_EMAIL);
