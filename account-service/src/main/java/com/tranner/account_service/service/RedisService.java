@@ -63,6 +63,10 @@ public class RedisService {
 
     public void saveEmailVerificationCode(String email, String code, long expirationMinutes) {
         System.out.println("redis service의 이메일 인증코드 저장 진입");
+        System.out.println("key: " + EMAIL_VERIFICATION_PREFIX + email);
+        System.out.println("value: " + code);
+        System.out.println("expire: " + expirationMinutes);
+
         redisTemplate.opsForValue().set(
                 EMAIL_VERIFICATION_PREFIX + email,
                 code,
