@@ -40,11 +40,11 @@ spring:
           predicates:
             - Path=/api/plan/**
         - id: travel-plan-search-service
-          uri: lb://travel-plan-search-service
+          uri: lb://external-api-proxy
           predicates:
             - Path=/api/search/**
         - id: travel-discovery-service
-          uri: lb://travel-discovery-service
+          uri: lb://external-api-proxy
           predicates:
             - Path=/api/discovery/**
 
