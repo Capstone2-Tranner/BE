@@ -53,6 +53,7 @@ public class MemberService {
 
     // 1-2. 아이디 중복 확인
     public boolean idDuplicatedCheck(String memberID) {
+        System.out.println("Service: 아아디 중복 체크 진입");
         //중복: true 중복 X: false
         return memberRepository.existsByMemberId(memberID);
     }

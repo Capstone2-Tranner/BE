@@ -39,6 +39,7 @@ public class MemberController {
     // 1-1. 회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDTO request) {
+        System.out.println("Controller: signup 진입");
         memberService.signup(request);
         return ResponseEntity.ok("회원가입에 성공하였습니다.");
     }
@@ -47,6 +48,7 @@ public class MemberController {
     // return: 중복 -> true
     @GetMapping("/idDuplicatedCheck")
     public ResponseEntity<Boolean> idDuplicatedCheck(@RequestParam("id") String id){
+        System.out.println("Controller: 아아디 중복 체크 진입");
         boolean response =  memberService.idDuplicatedCheck(id);
         return ResponseEntity.ok().body(response);
     }
@@ -54,6 +56,7 @@ public class MemberController {
     // 1-3. 인증코드 전송 요청
     @PostMapping("/email/verification")
     public ResponseEntity<Void> emailVerification(@Valid @RequestBody EmailOnlyRequestDTO requestDTO) {
+        System.out.println("Controller: 인증코드 전송 요청 진입");
         mailService.sendCodeToEmail(requestDTO.email());
         return ResponseEntity.ok().build();
     }
@@ -61,6 +64,7 @@ public class MemberController {
     // 1-4. 인증코드 검증 요청
     @PostMapping("/email/verification/check")
     public ResponseEntity<Boolean> checkEmailVerification(@Valid @RequestBody EmailVerificationRequestDTO requestDTO) {
+        System.out.println("Controller: 인증코드 검증 요청 진입");
         Boolean response = mailService.checkVerificationCode(requestDTO);
         return ResponseEntity.ok().body(response);
     }
