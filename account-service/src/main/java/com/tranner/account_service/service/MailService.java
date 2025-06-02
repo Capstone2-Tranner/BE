@@ -36,7 +36,7 @@ public class MailService {
         }
         // 인증 코드 생성(랜덤 코드 생성)
         String code = generateRandomCode(); 
-        sendEmail(email, "Trannere 인증코드", "인증 코드: " + code);
+        sendEmail(email, "Tranner 인증코드", "인증 코드: " + code);
 
         // Redis에 인증 코드 저장 (TTL: 5분)
         redisService.saveEmailVerificationCode(email, code, VERIFICATION_CODE_TTL);
