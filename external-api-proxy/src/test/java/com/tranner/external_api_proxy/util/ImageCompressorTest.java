@@ -1,5 +1,6 @@
 package com.tranner.external_api_proxy.util;
 
+import com.tranner.external_api_proxy.common.util.ImageUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
