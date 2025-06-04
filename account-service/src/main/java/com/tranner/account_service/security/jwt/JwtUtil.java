@@ -1,6 +1,7 @@
 package com.tranner.account_service.security.jwt;
 
 import com.tranner.account_service.service.RedisService;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -64,12 +65,17 @@ public class JwtUtil {
      * 토큰에서 memberId 추출
      */
     public String getMemberId(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("memberId", String.class);
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("memberId", String.class);
+        } catch (ExpiredJwtException e) {
+            // 만료된 토큰이라도 claims는 꺼낼 수 있음
+            return e.getClaims().get("memberId", String.class);
+        }
     }
 
     /**

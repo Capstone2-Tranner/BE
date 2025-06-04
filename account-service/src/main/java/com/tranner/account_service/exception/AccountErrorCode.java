@@ -22,10 +22,15 @@ public enum AccountErrorCode implements ErrorCode {
     FAILED_LOGIN(401, "CLT010", "회원정보가 일치하지 않습니다.", "ACCOUNT"),
     OAUTH2_LOGIN_FAILED(401, "SEC005", "소셜 로그인에 실패했습니다.", "ACCOUNT"),
 
-
     // 비밀번호 관련
     PASSWORD_MISMATCH(401, "CLT011", "비밀번호가 일치하지 않습니다.", "ACCOUNT"),
     INVALID_PASSWORD(400, "CLT013", "비밀번호는 영문자, 숫자, 특수문자를 포함한 8~20자리여야 합니다.", "ACCOUNT"),
+
+    // 엑세스 토큰 재발급 관련
+    MISSING_REFRESH_TOKEN(401, "SEC001", "Refresh Token이 존재하지 않습니다.", "ACCOUNT"),
+    MISSING_ACCESS_TOKEN(401, "SEC002", "Access Token이 필요합니다.", "ACCOUNT"),
+    INVALID_ACCESS_TOKEN(401, "SEC003", "Access Token이 유효하지 않습니다.", "ACCOUNT"),
+    INVALID_REFRESH_TOKEN(401, "SEC004", "유효하지 않은 Refresh Token입니다.", "ACCOUNT"),
 
     // JPA 관련
     DB_ERROR(500, "SYS003", "데이터 저장 중 오류가 발생했습니다.", "ACCOUNT"),

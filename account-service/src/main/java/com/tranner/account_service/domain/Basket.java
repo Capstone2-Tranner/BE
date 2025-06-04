@@ -44,6 +44,9 @@ public class Basket {
     @Column(name = "longitude", nullable = false)
     private Double longitude; //경도
 
+    @Column(name = "photo_url", nullable = true)
+    private String photoUrl;
+
     @Convert(converter = CountryCodeConverter.class)
     @Column(name = "country_code", nullable = false)
     private CountryCode countryCode; //국가번호

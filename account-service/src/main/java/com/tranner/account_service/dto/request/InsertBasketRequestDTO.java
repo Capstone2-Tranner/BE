@@ -35,6 +35,8 @@ public record InsertBasketRequestDTO(
             Double latitude,
 
             @NotNull(message = "경도를 입력해주세요")
-            Double longitude
+            Double longitude,
+
+            String photoUrl
     ) {}
 }

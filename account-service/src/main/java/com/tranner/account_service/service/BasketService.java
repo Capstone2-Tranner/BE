@@ -65,6 +65,7 @@ public class BasketService {
                         .address(place.address())
                         .latitude(place.latitude())
                         .longitude(place.longitude())
+                        .photoUrl(place.photoUrl())
                         .countryCode(countryCode)
                         .regionCode(regionCode)
                         .build()
