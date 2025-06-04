@@ -9,6 +9,7 @@ import com.tranner.account_service.service.MailService;
 import com.tranner.account_service.service.MemberService;
 import com.tranner.account_service.util.TokenExtractor;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,17 @@ public class MemberController {
     private final JwtUtil jwtUtil;
 
     private final TokenExtractor tokenExtractor;
-    
+
+    /*
+        엑세스 토큰 재발급 메서드
+     */
+    @PostMapping("/token/refresh")
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        memberService.refreshAccessToken(request, response);
+        return ResponseEntity.ok().build();  // 응답 바디는 service 내부에서 직접 작성됨
+    }
+
+
     /*
         1. 회원가입 관련 메서드
         1-1. 회원 가입
@@ -87,6 +98,8 @@ public class MemberController {
                                                         @RequestParam("regionName") String regionName){
         String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
         //String memberId = "testUser01";
+        System.out.println("✔ [readBasket] memberId: "+memberId);
+
         BasketResponseDTO basketResponseDTO = basketService.readBasket(memberId, countryName, regionName);
         return ResponseEntity.ok().body(basketResponseDTO);
     }
@@ -97,6 +110,8 @@ public class MemberController {
                                              @RequestBody InsertBasketRequestDTO insertBasketRequestDTO){
         String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
         //String memberId = "testUser01";
+        System.out.println("✔ [readBasket] memberId: "+memberId);
+
         // 저장 로직 수행
         basketService.insertBasket(memberId,insertBasketRequestDTO);
         return ResponseEntity.ok("장바구니에 장소 저장 성공");
@@ -108,6 +123,7 @@ public class MemberController {
                                              @RequestBody DeleteBasketRequestDTO deleteBasketRequestDTO){
         String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
         //String memberId = "testUser01";
+        System.out.println("✔ [readBasket] memberId: "+memberId);
         // 삭제 로직 수행
         basketService.deleteBasket(memberId,deleteBasketRequestDTO);
         return ResponseEntity.ok("장바구니에서 장소 삭제 성공");

@@ -6,7 +6,10 @@ import com.tranner.account_service.dto.request.PlanRequestDTO;
 import com.tranner.account_service.dto.request.SignupRequestDTO;
 import com.tranner.account_service.dto.response.PlanDetailResponseDTO;
 import com.tranner.account_service.dto.response.PlanListResponseDTO;
+import com.tranner.account_service.security.jwt.JwtUtil;
 import com.tranner.account_service.service.PlanService;
+import com.tranner.account_service.util.TokenExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,8 @@ public class PlanController {
 
     private final PlanService planService;
 
+    private final JwtUtil jwtUtil;
+    private final TokenExtractor tokenExtractor;
     /*
         1. 여행 계획 관련 메서드
         1-1. 여행 계획 리스트 출력
@@ -29,9 +34,9 @@ public class PlanController {
      */
     // 1-1. 여행 계획 리스트 출력
     @GetMapping("/planList")
-    public ResponseEntity<PlanListResponseDTO> readPlanList() {
-        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        String memberId = "testUser01";
+    public ResponseEntity<PlanListResponseDTO> readPlanList(HttpServletRequest request) {
+        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = "testUser01";
         //여행 계획 리스트 출력
         PlanListResponseDTO planListResponseDTO = planService.readPlanList(memberId);
         return ResponseEntity.ok().body(planListResponseDTO);
@@ -60,9 +65,9 @@ public class PlanController {
      */
     // 1-3. 여행 계획 생성
     @PostMapping("/plan/save")
-    public ResponseEntity<Void> savePlan(@RequestBody PlanRequestDTO planRequestDTO) {
-        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        String memberId = "testUser01";
+    public ResponseEntity<Void> savePlan(HttpServletRequest request, @RequestBody PlanRequestDTO planRequestDTO) {
+        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = "testUser01";
         //db에 저장
         planService.savePlan(memberId, planRequestDTO);
         return ResponseEntity.ok().build();
@@ -78,9 +83,9 @@ public class PlanController {
 
     //1-5. 여행 계획 수정
     @PostMapping("/plan/modify")
-    public ResponseEntity<Boolean> modifyPlan(@RequestBody PlanRequestDTO planRequestDTO) {
-        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        String memberId = "testUser01";
+    public ResponseEntity<Boolean> modifyPlan(HttpServletRequest request, @RequestBody PlanRequestDTO planRequestDTO) {
+        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = "testUser01";
         //db에서 삭제
         planService.deletePlan(planRequestDTO.scheduleId());
         //db에 저장

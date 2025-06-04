@@ -1,26 +1,83 @@
 package com.tranner.account_service.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tranner.account_service.dto.request.SignupRequestDTO;
 import com.tranner.account_service.domain.Member;
+import com.tranner.account_service.security.jwt.JwtUtil;
 import com.tranner.account_service.type.MemberType;
 import com.tranner.account_service.type.Role;
 import com.tranner.account_service.exception.AccountErrorCode;
 import com.tranner.account_service.exception.custom.BusinessLogicException;
 import com.tranner.account_service.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
 
+    private final RedisService redisService;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtUtil jwtUtil;
+
+    /*
+        엑세스 토큰 재발급
+     */
+    public void refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        // 1. 쿠키에서 refreshToken 꺼내기
+        String refreshToken = extractRefreshTokenFromCookies(request);
+        if (refreshToken == null) {
+            throw new BusinessLogicException(AccountErrorCode.MISSING_REFRESH_TOKEN);
+        }
+
+        // 2. 만료된 accessToken에서 memberId 추출 (단, 서명은 유효해야 함)
+        String expiredAccessToken = extractAccessTokenFromHeader(request);
+        if (expiredAccessToken == null) {
+            throw new BusinessLogicException(AccountErrorCode.MISSING_ACCESS_TOKEN);
+        }
+
+        String memberId;
+        try {
+            memberId = jwtUtil.getMemberId(expiredAccessToken);
+        } catch (Exception e) {
+            throw new BusinessLogicException(AccountErrorCode.INVALID_ACCESS_TOKEN);
+        }
+
+        // 3. Redis에 저장된 refreshToken과 일치하는지 확인
+        boolean valid = redisService.isValidRefreshToken(memberId, refreshToken);
+        if (!valid) {
+            throw new BusinessLogicException(AccountErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        // 4. role (DB나 캐시에서 가져오거나 하드코딩)
+        String role = Role.USER.getKey();
+
+        // 5. 새 AccessToken 발급
+        String newAccessToken = jwtUtil.createAccessToken(memberId, role);
+
+        // 6. 응답 헤더 및 바디 구성
+        response.addHeader("Authorization", "Bearer " + newAccessToken);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, String> responseBody = Map.of("memberId", memberId);
+        try {
+            response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+        } catch (IOException e) {
+            throw new RuntimeException("[Service: refreshAccessToken]응답 생성 실패", e);
+        }
+    }
 
     /*
         1. 회원 가입 관련 메서드
@@ -182,6 +239,24 @@ public class MemberService {
 
     */
 
+
+    private String extractRefreshTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("refreshToken".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    private String extractAccessTokenFromHeader(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
+    }
 
 
 }

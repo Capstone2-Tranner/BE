@@ -24,18 +24,21 @@ public enum RegionCode {
     사이판(6, "Saipan"),
     // 이탈리아
     로마(1, "Rome"),
-    베니스(2, "Venice"),
-    밀라노(3, "Milan"),
-    나폴리(4, "Naples"),
+    피렌체(1, "Florence"),
+    베니스(3, "Venice"),
+    밀라노(4, "Milan"),
+    나폴리(5, "Naples"),
     // 스페인
     바르셀로나(1, "Barcelona"),
     마드리드(2, "Madrid"),
     // 대한민국
-    제주도(1, "Jeju"),
-    서울(2, "Seoul"),
-    부산(3, "Busan"),
+    서울(1, "Seoul"),
+    부산(2, "Busan"),
+    제주(3, "Jeju"),
     경주(4, "Gyeongju"),
-    강릉(5, "Gangneung");
+    강릉(5, "Gangneung"),
+    전주(6, "Jeonju"),
+    수원(7, "Suwon");
 
     private final int code;
     private final String englishName;
