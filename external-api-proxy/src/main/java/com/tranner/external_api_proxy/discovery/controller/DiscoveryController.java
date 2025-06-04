@@ -1,6 +1,5 @@
 package com.tranner.external_api_proxy.discovery.controller;
 
-import com.mongodb.lang.Nullable;
 import com.tranner.external_api_proxy.discovery.dto.response.DetailResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlaceListResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlacesDTO;
@@ -8,6 +7,7 @@ import com.tranner.external_api_proxy.discovery.service.DiscoveryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +22,7 @@ public class DiscoveryController {
     /*
         1. 장소 리스트 출력(장소 리스트 및 최근 인기 여행지)
         2. 장소 상세정보 출력
+        3. 최근 인기 장소 출력
      */
 
     @GetMapping("/places")
