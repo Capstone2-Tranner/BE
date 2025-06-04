@@ -13,15 +13,17 @@ public class PlaceDTO {
     private String address;
     private Double latitude;
     private Double longitude;
+    private String photoUrl;
 
     public PlaceDTO(String placeId, String placeName, String placeType,
-                    String address, Double latitude, Double longitude) {
+                    String address, Double latitude, Double longitude, String photoUrl) {
         this.placeId = placeId;
         this.placeName = placeName;
         this.placeType = placeType;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.photoUrl = photoUrl;
     }
 
     public static PlaceDTO fromBasketEntity(Basket entity) {
@@ -31,7 +33,8 @@ public class PlaceDTO {
                 entity.getPlaceType().toString(),
                 entity.getAddress(),
                 entity.getLatitude(),
-                entity.getLongitude()
+                entity.getLongitude(),
+                entity.getPhotoUrl()
         );
     }
 

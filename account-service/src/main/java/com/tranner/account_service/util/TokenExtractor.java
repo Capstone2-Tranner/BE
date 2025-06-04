@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class TokenExtractor {
 
     public String extractToken(HttpServletRequest request) {
+        System.out.println("extractToken 진입");
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             // 토큰 존재 X 예외 발생시키기
@@ -17,8 +18,12 @@ public class TokenExtractor {
     }
 
     public String extractMemberId(HttpServletRequest request, JwtUtil jwtUtil) {
+        System.out.println("extractMemberId 진입");
         String token = extractToken(request);
-        return jwtUtil.getMemberId(token);
+        System.out.println("accessToken: "+token);
+        String memberId = jwtUtil.getMemberId(token);
+        System.out.println("memberId: "+memberId);
+        return memberId;
     }
 
 }
