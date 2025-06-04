@@ -47,6 +47,12 @@ spring:
           uri: lb://external-api-proxy
           predicates:
             - Path=/api/discovery/**
+      httpclient:
+        uri-encoding: UTF-8
+      codecs:
+        default-charset: UTF-8
+        charset:
+          accept: UTF-8
 
   security:
     oauth2:
