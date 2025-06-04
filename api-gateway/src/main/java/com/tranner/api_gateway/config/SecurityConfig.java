@@ -44,7 +44,7 @@ public class SecurityConfig {
                 }))
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/login/**", "/oauth2/**", "/login/success",
-                                "/api/account/login", "/api/account/signup",
+                                "/api/account/login", "/api/account/signup", "/api/account/token/refresh",
                                 "/api/account/idDuplicatedCheck", "/api/account/email/verification",
                                 "/api/account/email/verification/check", "/**").permitAll()
                         .anyExchange().authenticated()
