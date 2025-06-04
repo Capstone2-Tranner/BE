@@ -79,7 +79,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/login/**", "/oauth2/**", "/login/success",
-                                "/api/account/login", "/api/account/signup",
+                                "/api/account/login", "/api/account/signup", "/api/account/token/refresh",
                                 "/api/account/idDuplicatedCheck", "/api/account/email/verification",
                                 "/api/account/email/verification/check",
                                 "/**"
