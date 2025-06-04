@@ -29,13 +29,13 @@ public class DiscoveryController {
     public ResponseEntity<PlaceListResponseDTO> places(@RequestParam("countryName") String countryName,
                                                        @RequestParam("regionName") String regionName,
                                                        @RequestParam("pageToken") @Nullable String pageToken){
-        PlaceListResponseDTO placeListResponseDTO = discoveryService.getPlaces(countryName, regionName, pageToken);
+        PlaceListResponseDTO placeListResponseDTO = discoveryService.getPlaces(countryName, regionName, pageToken).block();
         return ResponseEntity.ok().body(placeListResponseDTO);
     }
 
     @GetMapping("/details/{placeId}")
     public ResponseEntity<DetailResponseDTO> placeDetail(@PathVariable("placeId") String placeId){
-        DetailResponseDTO detailResponseDTO = discoveryService.getDetails(placeId);
+        DetailResponseDTO detailResponseDTO = discoveryService.getDetails(placeId).block();
         return ResponseEntity.ok().body(detailResponseDTO);
     }
 
