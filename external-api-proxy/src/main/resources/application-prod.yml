@@ -2,9 +2,6 @@ server:
   port: 8085
 
 spring:
-  data:
-    mongodb:
-      uri: {MONGO_DB_URI}
 
   redis:
     host: ${REDIS_HOST}
