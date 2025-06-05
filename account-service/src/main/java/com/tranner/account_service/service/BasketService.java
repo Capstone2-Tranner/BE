@@ -32,17 +32,22 @@ public class BasketService {
 
     // 1. 장바구니 조회
     public BasketResponseDTO readBasket(String memberId, String countryName, String regionName){
+        System.out.println("✔ [readBasket: Service] | memberId: "+memberId+", countryName: "+countryName+", regionName: "+regionName);
         // 1-1. 문자열로 온 지역/국가명을 enum으로 변환
         CountryCode countryCode = CountryCode.fromName(countryName);
+        System.out.println("✔ [readBasket: Service] | countryCode: "+countryCode);
         RegionCode regionCode = RegionCode.fromName(regionName);
+        System.out.println("✔ [readBasket: Service] | regionCode: "+regionCode);
 
         //1-2. db에서 조회
         List<Basket> basketPlaces = basketRepository.findByMemberIdAndCountryCodeAndRegionCode(memberId, countryCode, regionCode);
+        System.out.println("✔ [readBasket: Service] | basketPlaces: "+basketPlaces);
         
         //1-3. PlaceDTO로 매핑
         List<PlaceDTO> places = basketPlaces.stream()
                 .map(PlaceDTO::fromBasketEntity)
                 .toList();
+        System.out.println("✔ [readBasket: Service] | places: "+places);
         //1-4. responseDTO에 담아 전달
         BasketResponseDTO basketResponseDTO = new BasketResponseDTO(countryName, regionName, places);
         return basketResponseDTO;
