@@ -3,6 +3,7 @@
 //import com.tranner.external_api_proxy.search.service.SearchService;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.http.ResponseEntity;
+//import org.springframework.lang.Nullable;
 //import org.springframework.web.bind.annotation.*;
 //
 //public class SearchController {
@@ -28,9 +29,10 @@
 //        //1. 검색어로 검색
 //        @GetMapping("/searchByText")
 //        public ResponseEntity<PlaceListResponseDTO> searchByText(@RequestParam("text") String text,
-//                                                           @RequestParam("latitude") Double latitude,
-//                                                           @RequestParam("longitude") Double longitude){
-//            PlaceListResponseDTO placeListResponseDTO = searchService.getPlaces(text, latitude, longitude);
+//                                                                @RequestParam("latitude") Double latitude,
+//                                                                @RequestParam("longitude") Double longitude,
+//                                                                 @RequestParam("pageToken") @Nullable String pageToken){
+//            PlaceListResponseDTO placeListResponseDTO = searchService.searchByText(text, latitude, longitude, pageToken);
 //            return ResponseEntity.ok().body(placeListResponseDTO);
 //        }
 //
@@ -42,10 +44,11 @@
 //         */
 //        //1. 타입 별 검색(명소, 맛집, 숙소)
 //        @GetMapping("/searchByText")
-//        public ResponseEntity<PlaceListResponseDTO> searchByType(@RequestParam("latitude") Double latitude,
+//        public ResponseEntity<PlaceListResponseDTO> searchByType(@RequestParam("type") String type,
+//                                                                 @RequestParam("latitude") Double latitude,
 //                                                                 @RequestParam("longitude") Double longitude,
-//                                                                 @RequestParam("type") String type){
-//            PlaceListResponseDTO placeListResponseDTO = searchService.getPlaces(text, latitude, longitude, type);
+//                                                                 @RequestParam("pageToken") @Nullable String pageToken){
+//            PlaceListResponseDTO placeListResponseDTO = searchService.searchByType(type, latitude, longitude, pageToken);
 //            return ResponseEntity.ok().body(placeListResponseDTO);
 //        }
 //

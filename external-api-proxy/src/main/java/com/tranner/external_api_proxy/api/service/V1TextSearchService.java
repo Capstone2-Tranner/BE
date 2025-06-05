@@ -370,4 +370,113 @@ public class V1TextSearchService{
                             });
                 }));
     }
+
+    /**
+     * @param text
+     * @param latitude
+     * @param longitude
+     * @param pageToken
+     * @return
+     */
+    // 4. text search (non-blocking) 여행 계획 페이지 - 신버전
+//    public Mono<V1KeywordSearchResponse> searchByTypeAsync(String text, Double latitude, Double longitude, @Nullable String pageToken) {
+//        //location 생성
+//
+//        return redisService.getCachedTextSearchMono(textQuery, pageToken)
+//                .filter(cached -> cached != null)
+//                .switchIfEmpty(Mono.defer(() -> {
+//                    Map<String, Object> bodyMap = new HashMap<>();
+//                    bodyMap.put("textQuery", text);
+//                    bodyMap.put("languageCode", "ko");
+//                    bodyMap.put("pageSize", 20);
+//                    if (pageToken != null) {
+//                        bodyMap.put("pageToken", pageToken);
+//                    }
+//
+//                    return webClient.post()
+//                            .uri(uriBuilder -> uriBuilder
+//                                    .scheme("https")
+//                                    .host("places.googleapis.com")
+//                                    .path("/v1/places:searchText")
+//                                    .queryParam("key", GOOGLE_PLACES_KEY)
+//                                    .queryParam("fields", V1_TEXT_FIELDS)
+//                                    .build())
+//                            .bodyValue(bodyMap)
+//                            .retrieve()
+//                            // ✅ HTTP 상태 코드 기반 에러 처리
+//                            .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(), response ->
+//                                    response.bodyToMono(String.class)
+//                                            .flatMap(body -> {
+//                                                String message = String.format("Google V1 Text API Error: %s\nResponse body: %s",
+//                                                        response.statusCode(), body);
+//                                                return Mono.error(new InternalServerException(ApiErrorCode.GOOGLE_HTTP_ERROR, message));
+//                                            })
+//                            )
+//                            .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+//                            })
+//                            .map(responseMap -> {
+//                                ObjectMapper mapper = new ObjectMapper();
+//
+//                                // 1. places 리스트 파싱 (직접 수동 매핑)
+//                                List<Map<String, Object>> places = (List<Map<String, Object>>) responseMap.getOrDefault("places", List.of());
+//
+//                                List<V1KeywordSearchResult> results = places.stream().map(place -> {
+//                                    V1KeywordSearchResult result = new V1KeywordSearchResult();
+//
+//                                    // 1-1. place Id SET
+//                                    result.setId((String) place.get("id"));
+//
+//                                    // 1-2. place Name SET
+//                                    Map<String, Object> displayName = (Map<String, Object>) place.get("displayName");
+//                                    if (displayName != null) {
+//                                        result.setPlaceName((String) displayName.get("text"));
+//                                    }
+//
+//                                    // 1-3. address SET
+//                                    result.setAddress((String) place.get("formattedAddress"));
+//
+//                                    // 1-4. location SET
+//                                    Map<String, Object> locationMap = (Map<String, Object>) place.get("location");
+//                                    if (locationMap != null) {
+//                                        Double lat = locationMap.get("latitude") instanceof Number ? ((Number) locationMap.get("latitude")).doubleValue() : null;
+//                                        Double lng = locationMap.get("longitude") instanceof Number ? ((Number) locationMap.get("longitude")).doubleValue() : null;
+//
+//                                        result.setLatitude(lat);
+//                                        result.setLongitude(lng);
+//                                    }
+//
+//                                    // 1-5. type SET
+//                                    // 타입 매핑
+//                                    List<String> types = (List<String>) place.get("types");
+//                                    PlaceType mappedType = PlaceTypeMappingUtil.classify(types);
+//                                    result.setPlaceType(mappedType);
+//
+//                                    // 1-6. photoUrl SET
+//                                    List<Map<String, Object>> photos = (List<Map<String, Object>>) place.get("photos");
+//                                    if (photos != null && !photos.isEmpty()) {
+//                                        String photoReference = (String) photos.get(0).get("name");
+//
+//                                        // photoService 호출
+//                                        String photoUrl = photoService.getPhotoUrl(photoReference, PhotoSize.MIDDLE);
+//
+//                                        result.setPhotoUrl(photoUrl);
+//                                    }
+//
+//                                    return result;
+//                                }).toList();
+//
+//                                // 2. nextPageToken 추출
+//                                String nextPageToken = (String) responseMap.getOrDefault("nextPageToken", null);
+//                                System.out.println("🔵 nextPageToken = " + nextPageToken);
+//
+//                                V1KeywordSearchResponse response = new V1KeywordSearchResponse(results, nextPageToken);
+//                                return response;
+//                            })
+//                            .doOnNext(response -> redisService.cacheTextSearch(textQuery, pageToken, response))
+//                            // ✅ 네트워크/파싱 등 예외 잡아서 로깅 후 fallback
+//                            .onErrorResume(ex -> {
+//                                return Mono.error(new InternalServerException(ApiErrorCode.GOOGLE_API_REQUEST_ERROR, ex.getMessage()));
+//                            });
+//                }));
+//    }
 }
