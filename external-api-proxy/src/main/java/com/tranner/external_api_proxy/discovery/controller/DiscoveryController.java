@@ -1,6 +1,5 @@
 package com.tranner.external_api_proxy.discovery.controller;
 
-import com.tranner.external_api_proxy.discovery.dto.request.PlaceSearchRequestDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.DetailResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlaceListResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlacesDTO;
@@ -26,22 +25,14 @@ public class DiscoveryController {
         3. 최근 인기 장소 출력
      */
 
-//    @GetMapping("/places")
-//    public ResponseEntity<PlaceListResponseDTO> places(@RequestParam("countryName") String countryName,
-//                                                       @RequestParam("regionName") String regionName,
-//                                                       @RequestParam("pageToken") @Nullable String pageToken){
-//        System.out.println("/api/discovery/places controller 진입");
-//        System.out.println("countryName"+countryName);
-//        System.out.println("regionName"+regionName);
-//        PlaceListResponseDTO placeListResponseDTO = discoveryService.getPlaces(countryName, regionName, pageToken).block();
-//        return ResponseEntity.ok().body(placeListResponseDTO);
-//    }
-    @PostMapping("/places")
-    public ResponseEntity<PlaceListResponseDTO> places(@RequestBody PlaceSearchRequestDTO request){
+    @GetMapping("/places")
+    public ResponseEntity<PlaceListResponseDTO> places(@RequestParam("countryName") String countryName,
+                                                       @RequestParam("regionName") String regionName,
+                                                       @RequestParam("pageToken") @Nullable String pageToken){
         System.out.println("/api/discovery/places controller 진입");
-        System.out.println("countryName: " + request.getCountryName());
-        System.out.println("regionName: " + request.getRegionName());
-        PlaceListResponseDTO placeListResponseDTO = discoveryService.getPlaces(request.getCountryName(), request.getRegionName(), request.getPageToken()).block();
+        System.out.println("countryName"+countryName);
+        System.out.println("regionName"+regionName);
+        PlaceListResponseDTO placeListResponseDTO = discoveryService.getPlaces(countryName, regionName, pageToken).block();
         return ResponseEntity.ok().body(placeListResponseDTO);
     }
 
