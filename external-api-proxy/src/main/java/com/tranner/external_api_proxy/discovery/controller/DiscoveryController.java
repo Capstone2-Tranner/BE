@@ -29,6 +29,9 @@ public class DiscoveryController {
     public ResponseEntity<PlaceListResponseDTO> places(@RequestParam("countryName") String countryName,
                                                        @RequestParam("regionName") String regionName,
                                                        @RequestParam("pageToken") @Nullable String pageToken){
+        System.out.println("/api/discovery/places controller 진입");
+        System.out.println("countryName"+countryName);
+        System.out.println("regionName"+regionName);
         PlaceListResponseDTO placeListResponseDTO = discoveryService.getPlaces(countryName, regionName, pageToken).block();
         return ResponseEntity.ok().body(placeListResponseDTO);
     }
