@@ -20,12 +20,20 @@ public class LoggingGlobalFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+
+        // URI + QueryParam 로그 찍기 (디버깅용)
+        String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
+        String path = request.getURI().getPath();
+        String query = request.getURI().getQuery();
+
+        log.info("📨 Gateway Request: [{}] {}{}", method, path, (query != null ? "?" + query : ""));
+
         long start = System.currentTimeMillis();
 
         return chain.filter(exchange)
                 .doFinally(signalType -> {
                     long duration = System.currentTimeMillis() - start;
-                    ServerHttpRequest request = exchange.getRequest();
                     // 로그 남기기
                     LogUtil.logRequestDuration(log, request, duration);
                 });

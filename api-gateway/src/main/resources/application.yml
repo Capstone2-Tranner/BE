@@ -1,5 +1,7 @@
 server:
   port: 8080
+  tomcat:
+    uri-encoding: UTF-8
   forward-headers-strategy: framework
 
 eureka:
@@ -48,6 +50,8 @@ spring:
           predicates:
             - Path=/api/discovery/**
       httpclient:
+        uri-encoding: UTF-8
+      httpserver:
         uri-encoding: UTF-8
       codecs:
         default-charset: UTF-8
