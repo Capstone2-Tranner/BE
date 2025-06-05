@@ -96,8 +96,8 @@ public class MemberController {
     public ResponseEntity<BasketResponseDTO> readBasket(HttpServletRequest request,
                                                         @RequestParam("countryName") String countryName,
                                                         @RequestParam("regionName") String regionName){
-        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        //String memberId = "testUser01";
+        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        String memberId = "testUser01";
         System.out.println("✔ [readBasket] memberId: "+memberId);
 
         BasketResponseDTO basketResponseDTO = basketService.readBasket(memberId, countryName, regionName);
@@ -108,8 +108,8 @@ public class MemberController {
     @PostMapping("/basket/insert")
     public ResponseEntity<String> insertBasket(HttpServletRequest request,
                                              @RequestBody InsertBasketRequestDTO insertBasketRequestDTO){
-        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        //String memberId = "testUser01";
+        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        String memberId = "testUser01";
         System.out.println("✔ [readBasket] memberId: "+memberId);
 
         // 저장 로직 수행
@@ -121,8 +121,8 @@ public class MemberController {
     @PostMapping("/basket/delete")
     public ResponseEntity<String> deleteBasket(HttpServletRequest request,
                                              @RequestBody DeleteBasketRequestDTO deleteBasketRequestDTO){
-        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
-        //String memberId = "testUser01";
+        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        String memberId = "testUser01";
         System.out.println("✔ [readBasket] memberId: "+memberId);
         // 삭제 로직 수행
         basketService.deleteBasket(memberId,deleteBasketRequestDTO);
