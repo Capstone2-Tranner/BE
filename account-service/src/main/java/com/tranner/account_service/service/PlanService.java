@@ -6,6 +6,7 @@ import com.tranner.account_service.domain.ScheduleDetail;
 import com.tranner.account_service.dto.request.PlanRequestDTO;
 import com.tranner.account_service.dto.response.PlanDetailResponseDTO;
 import com.tranner.account_service.dto.response.PlanListResponseDTO;
+import com.tranner.account_service.dto.response.PlanModifyResponseDTO;
 import com.tranner.account_service.repository.ScheduleDetailRepository;
 import com.tranner.account_service.repository.ScheduleRepository;
 import com.tranner.account_service.type.CountryCode;
@@ -81,6 +82,54 @@ public class PlanService {
 
         // 5. 최종 응답 DTO 생성
         return new PlanDetailResponseDTO(
+                schedule.getScheduleName(),
+                schedule.getStartDate(),
+                schedule.getEndDate(),
+                schedule.getHowManyPeople(),
+                schedule.getCountryCode().name(),
+                schedule.getRegionCode().name(),
+                daySchedules
+        );
+    }
+
+    public PlanModifyResponseDTO readPlanDetailToModify(Long scheduleId) {
+        // 1. Schedule 조회
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 존재하지 않습니다: " + scheduleId));
+
+        // 2. ScheduleDetail 전체 조회
+        List<ScheduleDetail> details = scheduleDetailRepository.findBySchedule_Id(scheduleId);
+
+        // 3. day_seq 기준으로 그룹핑
+        Map<Integer, List<ScheduleDetail>> grouped = details.stream()
+                .collect(Collectors.groupingBy(ScheduleDetail::getDaySeq));
+
+        // 4. DTO 변환
+        List<PlanModifyResponseDTO.DayScheduleDTO> daySchedules = grouped.entrySet().stream()
+                .map(entry -> {
+                    int daySeq = entry.getKey();
+                    List<PlanModifyResponseDTO.LocationDTO> locations = entry.getValue().stream()
+                            .sorted(Comparator.comparingInt(ScheduleDetail::getLocationSeq))
+                            .map(detail -> new PlanModifyResponseDTO.LocationDTO(
+                                    detail.getLocationSeq(),
+                                    detail.getStartTime(),
+                                    detail.getEndTime(),
+                                    detail.getPlaceId(),
+                                    detail.getPlaceName(),
+                                    detail.getPlaceType().name(),
+                                    detail.getAddress(),
+                                    detail.getLatitude(),
+                                    detail.getLongitude(),
+                                    detail.getMemo()
+                            ))
+                            .toList();
+                    return new PlanModifyResponseDTO.DayScheduleDTO(daySeq, locations);
+                })
+                .sorted(Comparator.comparingInt(PlanModifyResponseDTO.DayScheduleDTO::getDaySeq))
+                .toList();
+
+        // 5. 최종 응답 DTO 생성
+        return new PlanModifyResponseDTO(
                 schedule.getScheduleName(),
                 schedule.getStartDate(),
                 schedule.getEndDate(),
