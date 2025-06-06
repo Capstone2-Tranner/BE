@@ -49,17 +49,8 @@ public class SecurityConfig {
                                 "/api/account/email/verification/check",
                                 "/api/account/token/refresh",
                                 "/api/discovery/**").permitAll()
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()
                 )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(jwtAccessDeniedHandler)
-                )
-//                .oauth2ResourceServer(oauth2 ->
-//                        oauth2.jwt(jwt -> {
-//                            // 여기에 커스텀 설정이 필요하면 작성
-//                        })
-//                )
                 .build();
     }
 
