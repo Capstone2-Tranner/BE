@@ -14,6 +14,6 @@ public class PlacesDTO {
     private String placeId;
     private String placeName;
     private String placeType;
-    private String photo; // URL
+    private String photoUrl; // URL
 
 }

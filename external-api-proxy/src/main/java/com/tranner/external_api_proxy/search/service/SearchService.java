@@ -66,7 +66,7 @@ public class SearchService {
                         .placeId(place.getId())
                         .placeName(place.getPlaceName())
                         .placeType(place.getPlaceType().toString())
-                        .photo(place.getPhotoUrl())
+                        .photoUrl(place.getPhotoUrl())
                         .address(place.getAddress())
                         .latitude(place.getLatitude())
                         .longitude(place.getLongitude())
