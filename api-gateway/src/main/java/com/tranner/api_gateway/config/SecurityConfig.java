@@ -47,6 +47,7 @@ public class SecurityConfig {
                                 "/api/account/login", "/api/account/signup", "/api/account/token/refresh",
                                 "/api/account/idDuplicatedCheck", "/api/account/email/verification",
                                 "/api/account/email/verification/check",
+                                "/api/account/token/refresh",
                                 "/api/discovery/**").permitAll()
                         .anyExchange().authenticated()
                 )
