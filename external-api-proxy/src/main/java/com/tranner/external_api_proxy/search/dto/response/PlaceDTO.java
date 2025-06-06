@@ -16,7 +16,7 @@ public class PlaceDTO {
     private String placeId;
     private String placeName;
     private String placeType;
-    private String photo;
+    private String photoUrl;
     private String address;
     private double latitude;
     private double longitude;

@@ -52,7 +52,7 @@ public class DiscoveryService {
 //                        .placeId(place.getId())
 //                        .placeName(place.getPlaceName())
 //                        .placeType(place.getPlaceType().toString())
-//                        .photo(place.getPhotoUrl())
+//                        .photoUrl(place.getPhotoUrl())
 //                        .build())
 //                .toList();
 //        System.out.println("4. DTO 변환 완료, 총 개수: " + dtoList.size());
@@ -108,7 +108,7 @@ public class DiscoveryService {
                                     .placeId(place.getId())
                                     .placeName(place.getPlaceName())
                                     .placeType(place.getPlaceType().toString())
-                                    .photo(place.getPhotoUrl())
+                                    .photoUrl(place.getPhotoUrl())
                                     .build())
                             .toList();
                     System.out.println("4. DTO 변환 완료, 총 개수: " + dtoList.size());
@@ -211,7 +211,7 @@ public class DiscoveryService {
                         .placeId(place.getPlaceId())
                         .placeName(place.getPlaceName())
                         .placeType(place.getPlaceType().name()) // enum → String
-                        .photo(place.getPhotoUrl())
+                        .photoUrl(place.getPhotoUrl())
                         .build())
                 .toList();
 
