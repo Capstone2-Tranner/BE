@@ -15,12 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 public class PlanDetailResponseDTO {
 
-    private String schedule_name;
-    private LocalDate start_date;
-    private LocalDate end_date;
-    private int how_many_people;
-    private String country_name;
-    private String region_name;
+    private String scheduleName;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int howManyPeople;
+    private String countryName;
+    private String regionName;
     private List<DayScheduleDTO> detailSchedule;
 
     @Getter
@@ -28,7 +28,7 @@ public class PlanDetailResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DayScheduleDTO {
-        private int day_seq;
+        private int daySeq;
         private List<LocationDTO> scheduleByDay;
     }
 
@@ -37,10 +37,10 @@ public class PlanDetailResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LocationDTO {
-        private int location_seq;
-        private LocalTime start_time;
-        private LocalTime end_time;
-        private String place_name;
-        private String place_type;
+        private int locationSeq;
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private String placeName;
+        private String placeType;
     }
 }

@@ -21,12 +21,12 @@ public class PlanListResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PlanDTO {
-        private Long schedule_id;
-        private String schedule_name;
-        private LocalDate start_date;
-        private LocalDate end_date;
-        private int how_many_people;
-        private String country_name;
-        private String region_name;
+        private Long scheduleId;
+        private String scheduleName;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private int howManyPeople;
+        private String countryName;
+        private String regionName;
     }
 }
