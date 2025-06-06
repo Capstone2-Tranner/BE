@@ -76,7 +76,7 @@ public class PlanService {
                             .toList();
                     return new PlanDetailResponseDTO.DayScheduleDTO(daySeq, locations);
                 })
-                .sorted(Comparator.comparingInt(PlanDetailResponseDTO.DayScheduleDTO::getDay_seq))
+                .sorted(Comparator.comparingInt(PlanDetailResponseDTO.DayScheduleDTO::getDaySeq))
                 .toList();
 
         // 5. 최종 응답 DTO 생성
