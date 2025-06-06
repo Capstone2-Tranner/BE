@@ -42,4 +42,15 @@ public class DiscoveryController {
         return ResponseEntity.ok().body(detailResponseDTO);
     }
 
+    // 최근 인기 장소 출력
+    @GetMapping("/popularPlaces")
+    public ResponseEntity<List<PlacesDTO>> popularPlaces(@RequestParam("countryName") String countryName,
+                                                       @RequestParam("regionName") String regionName){
+        System.out.println("/api/discovery/places controller 진입");
+        System.out.println("countryName"+countryName);
+        System.out.println("regionName"+regionName);
+        List<PlacesDTO> placesDTO = discoveryService.getPopularPlaces(countryName, regionName);
+        return ResponseEntity.ok().body(placesDTO);
+    }
+
 }

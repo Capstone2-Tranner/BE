@@ -46,7 +46,8 @@ public class SecurityConfig {
                         .pathMatchers("/login/**", "/oauth2/**", "/login/success",
                                 "/api/account/login", "/api/account/signup", "/api/account/token/refresh",
                                 "/api/account/idDuplicatedCheck", "/api/account/email/verification",
-                                "/api/account/email/verification/check", "/**").permitAll()
+                                "/api/account/email/verification/check",
+                                "/api/discovery/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .exceptionHandling(ex -> ex
