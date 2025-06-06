@@ -2,6 +2,17 @@ server:
   port: 8085
 
 spring:
+  datasource:
+    url: ${PROD_DB_URL}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   redis:
     host: ${REDIS_HOST}
     port: 6379

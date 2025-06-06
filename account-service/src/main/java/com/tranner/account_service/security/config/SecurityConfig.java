@@ -81,8 +81,7 @@ public class SecurityConfig {
                                 "/login/**", "/oauth2/**", "/login/success",
                                 "/api/account/login", "/api/account/signup", "/api/account/token/refresh",
                                 "/api/account/idDuplicatedCheck", "/api/account/email/verification",
-                                "/api/account/email/verification/check",
-                                "/**"
+                                "/api/account/email/verification/check"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
