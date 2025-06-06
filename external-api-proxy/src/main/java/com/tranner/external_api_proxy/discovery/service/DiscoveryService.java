@@ -18,6 +18,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -218,6 +219,28 @@ public class DiscoveryService {
         return places;
     }
 
+    public Mono<List<PlacesDTO>> getPlacesByIds(List<String> placeIds) {
+        List<Mono<PlacesDTO>> monoList = new ArrayList<>();
+
+        for (String placeId : placeIds) {
+            Mono<PlacesDTO> placeDtoMono = getDetails(placeId)
+                    .map(detail -> new PlacesDTO(
+                            detail.getPlaceId(),
+                            detail.getName(),
+                            detail.getPlaceType().name(),
+                            detail.getPhotoUrl()
+                    ));
+            monoList.add(placeDtoMono);
+        }
+
+        return Mono.zip(monoList, results -> {
+            List<PlacesDTO> dtoList = new ArrayList<>();
+            for (Object obj : results) {
+                dtoList.add((PlacesDTO) obj);
+            }
+            return dtoList;
+        });
+    }
 
 
 }

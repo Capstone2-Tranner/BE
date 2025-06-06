@@ -53,4 +53,22 @@ public class DiscoveryController {
         return ResponseEntity.ok().body(placesDTO);
     }
 
+    /*
+        2. 최근 조회 목록 요청
+     */
+    @GetMapping("/recent")
+    public ResponseEntity<List<PlacesDTO>> recentPlaces(
+            @CookieValue(name = "recent_places", required = false) String recentPlaceIds
+    ) {
+        if (recentPlaceIds == null || recentPlaceIds.isBlank()) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        List<String> ids = List.of(recentPlaceIds.split(","));
+
+        // 예: 외부 API에 여러 ID 조회 요청
+        List<PlacesDTO> result = discoveryService.getPlacesByIds(ids).block();
+        return ResponseEntity.ok(result);
+    }
+
 }
