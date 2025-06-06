@@ -6,6 +6,7 @@ import com.tranner.account_service.dto.request.PlanRequestDTO;
 import com.tranner.account_service.dto.request.SignupRequestDTO;
 import com.tranner.account_service.dto.response.PlanDetailResponseDTO;
 import com.tranner.account_service.dto.response.PlanListResponseDTO;
+import com.tranner.account_service.dto.response.PlanModifyResponseDTO;
 import com.tranner.account_service.security.jwt.JwtUtil;
 import com.tranner.account_service.service.PlanService;
 import com.tranner.account_service.util.TokenExtractor;
@@ -57,6 +58,12 @@ public class PlanController {
     }
 
     // 여행 계획 상세 정보 -> 수정으로 넘어갈 때 따로 가져오기.
+    @GetMapping("/planDetail/modify")
+    public ResponseEntity<PlanModifyResponseDTO> readPlanDetailToModify(@RequestParam("id") Long id){
+        //스케줄 식별자로 스케줄 가져오기
+        PlanModifyResponseDTO planModifyResponseDTO = planService.readPlanDetailToModify(id);
+        return ResponseEntity.ok().body(planModifyResponseDTO);
+    }
 
     /**
      *
