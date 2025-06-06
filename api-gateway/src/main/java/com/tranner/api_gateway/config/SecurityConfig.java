@@ -54,11 +54,11 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt -> {
-                            // 여기에 커스텀 설정이 필요하면 작성
-                        })
-                )
+//                .oauth2ResourceServer(oauth2 ->
+//                        oauth2.jwt(jwt -> {
+//                            // 여기에 커스텀 설정이 필요하면 작성
+//                        })
+//                )
                 .build();
     }
 
