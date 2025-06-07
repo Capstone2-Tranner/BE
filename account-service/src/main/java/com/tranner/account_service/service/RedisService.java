@@ -38,23 +38,23 @@ public class RedisService {
 
     public void saveRefreshToken(String memberId, String token, long expirationMinutes) {
         redisTemplate.opsForValue().set(
-                REFRESH_TOKEN_PREFIX + memberId,
-                token,
+                REFRESH_TOKEN_PREFIX + token,
+                memberId,
                 Duration.ofMinutes(expirationMinutes)
         );
     }
 
-    public String getRefreshToken(String memberId) {
-        return redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + memberId);
+    public String getMemberIdFromRefreshToken(String token) {
+        return redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + token);
     }
 
-    public void deleteRefreshToken(String memberId) {
-        redisTemplate.delete(REFRESH_TOKEN_PREFIX + memberId);
+    public void deleteRefreshToken(String token) {
+        redisTemplate.delete(REFRESH_TOKEN_PREFIX + token);
     }
 
     public boolean isValidRefreshToken(String memberId, String token) {
-        String saved = getRefreshToken(memberId);
-        return saved != null && saved.equals(token);
+        String saved = getMemberIdFromRefreshToken(token);
+        return saved != null && saved.equals(memberId);
     }
 
     /** ================================

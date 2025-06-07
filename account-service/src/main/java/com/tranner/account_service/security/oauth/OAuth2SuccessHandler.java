@@ -54,7 +54,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("OAuth Success: " + registrationId + " / " + email);
 
         // 1. Access Token 생성
-        String accessToken = jwtUtil.createAccessToken(memberId, Role.USER.getKey());
+        String accessToken = jwtUtil.createAccessToken(memberId, Role.ROLE_USER.getKey());
 
         // 2. Refresh Token 생성
         String refreshToken = jwtUtil.createRefreshToken(memberId);
@@ -63,13 +63,19 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         redisService.saveRefreshToken(memberId, refreshToken, jwtUtil.getRefreshTokenExpirationMs());
 
         // 4. Refresh Token을 HTTP-Only 쿠키에 저장
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true); // JS에서 접근 못하게 함
-        refreshTokenCookie.setSecure(true);   // HTTPS 환경에서만 전송되도록 설정 (로컬 테스트 시 false 가능)
-        refreshTokenCookie.setPath("/");      // 모든 경로에서 접근 가능
-        refreshTokenCookie.setMaxAge((int) (jwtUtil.getRefreshTokenExpirationMs() / 1000)); // 만료 시간 (초 단위)
+//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+//        refreshTokenCookie.setHttpOnly(true); // JS에서 접근 못하게 함
+//        refreshTokenCookie.setSecure(true);   // HTTPS 환경에서만 전송되도록 설정 (로컬 테스트 시 false 가능)
+//        refreshTokenCookie.setPath("/");      // 모든 경로에서 접근 가능
+//        refreshTokenCookie.setMaxAge((int) (jwtUtil.getRefreshTokenExpirationMs() / 1000)); // 만료 시간 (초 단위)
+//
+//        response.addCookie(refreshTokenCookie);
+        String cookieString = "refreshToken=" + refreshToken +
+                "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=" +
+                (jwtUtil.getRefreshTokenExpirationMs() / 1000);
 
-        response.addCookie(refreshTokenCookie);
+        response.setHeader("Set-Cookie", cookieString);
+
 
         System.out.println("MOVE TO REDIRECT");
         // 5. 토큰 포함해서 리다이렉트 (query param 또는 header)

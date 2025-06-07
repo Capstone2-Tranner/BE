@@ -91,7 +91,10 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 //        response.getWriter().write(new ObjectMapper().writeValueAsString(Map.of(
 //                "accessToken", accessToken
 //        )));
-//        response.addHeader("Set-Cookie", "refreshToken=" + refreshToken + "; HttpOnly; Path=/; Max-Age=604800");
+        response.addHeader("Set-Cookie",
+                "refreshToken=" + refreshToken +
+                        "; HttpOnly; Path=/; Max-Age=604800; Secure; SameSite=None"
+        );
     }
 
     // 로그인 실패 처리

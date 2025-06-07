@@ -1,6 +1,7 @@
 package com.tranner.account_service.security.config;
 
 import com.tranner.account_service.security.filter.CustomLoginFilter;
+import com.tranner.account_service.security.filter.JwtFilter;
 import com.tranner.account_service.security.jwt.JwtAccessDeniedHandler;
 import com.tranner.account_service.security.jwt.JwtAuthenticationEntryPoint;
 import com.tranner.account_service.security.oauth.OAuth2FailureHandler;
@@ -54,6 +55,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(jwtUtil);  // jwtUtil은 생성자 주입으로 해결됨
+    }
+
+    @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setSameSite("None"); // OAuth2 리다이렉트 대응
@@ -87,17 +93,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                .addFilterBefore(customLoginFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+
+                .addFilterAt(customLoginFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .oauth2Login(oauth -> oauth
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
                         .failureHandler(new OAuth2FailureHandler())
-                )
-
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .bearerTokenResolver(bearerTokenResolver())
-                        .jwt(Customizer.withDefaults())
                 )
 
                 .exceptionHandling(exception -> exception
