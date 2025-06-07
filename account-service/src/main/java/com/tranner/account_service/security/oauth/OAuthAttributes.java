@@ -73,7 +73,7 @@ public class OAuthAttributes {
         return Member.builder()
                 .memberId(email.substring(0, email.indexOf("@")))
                 .email(email)
-                .role(Role.USER)  // enum Role.USER 사용 예시
+                .role(Role.ROLE_USER)  // enum Role.USER 사용 예시
                 .memberType(convertToMemberType(registrationId))
                 .registerDate(LocalDate.now())
                 .build();

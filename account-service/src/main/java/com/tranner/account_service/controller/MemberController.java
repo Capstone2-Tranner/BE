@@ -4,15 +4,17 @@ package com.tranner.account_service.controller;
 import com.tranner.account_service.dto.request.*;
 import com.tranner.account_service.dto.response.BasketResponseDTO;
 import com.tranner.account_service.security.jwt.JwtUtil;
+import com.tranner.account_service.security.user.CustomUserDetails;
 import com.tranner.account_service.service.BasketService;
 import com.tranner.account_service.service.MailService;
 import com.tranner.account_service.service.MemberService;
-import com.tranner.account_service.util.TokenExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -27,12 +29,10 @@ public class MemberController {
     private final MailService mailService;
     private final JwtUtil jwtUtil;
 
-    private final TokenExtractor tokenExtractor;
-
     /*
         엑세스 토큰 재발급 메서드
      */
-    @PostMapping("/token/refresh")
+    @GetMapping("/token/refresh")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         memberService.refreshAccessToken(request, response);
         return ResponseEntity.ok().build();  // 응답 바디는 service 내부에서 직접 작성됨
@@ -96,8 +96,14 @@ public class MemberController {
     public ResponseEntity<BasketResponseDTO> readBasket(HttpServletRequest request,
                                                         @RequestParam("countryName") String countryName,
                                                         @RequestParam("regionName") String regionName){
-        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String memberId = authentication.getName(); // 보통 여기서 memberId 반환됨
+
         //String memberId = "testUser01";
+
         System.out.println("✔ [readBasket] memberId: "+memberId);
 
         BasketResponseDTO basketResponseDTO = basketService.readBasket(memberId, countryName, regionName);
@@ -108,7 +114,10 @@ public class MemberController {
     @PostMapping("/basket/insert")
     public ResponseEntity<String> insertBasket(HttpServletRequest request,
                                              @RequestBody InsertBasketRequestDTO insertBasketRequestDTO){
-        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String memberId = authentication.getName(); // 보통 여기서 memberId 반환됨
         //String memberId = "testUser01";
         System.out.println("✔ [readBasket] memberId: "+memberId);
 
@@ -121,7 +130,10 @@ public class MemberController {
     @PostMapping("/basket/delete")
     public ResponseEntity<String> deleteBasket(HttpServletRequest request,
                                              @RequestBody DeleteBasketRequestDTO deleteBasketRequestDTO){
-        String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        //String memberId = tokenExtractor.extractMemberId(request, jwtUtil);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String memberId = authentication.getName(); // 보통 여기서 memberId 반환됨
         //String memberId = "testUser01";
         System.out.println("✔ [readBasket] memberId: "+memberId);
         // 삭제 로직 수행
