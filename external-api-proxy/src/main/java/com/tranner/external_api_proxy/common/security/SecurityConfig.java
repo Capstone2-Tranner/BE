@@ -3,6 +3,7 @@ package com.tranner.external_api_proxy.common.security;
 //import com.tranner.external_api_proxy.common.security.jwt.CustomJwtDecoder;
 import com.tranner.external_api_proxy.common.security.jwt.JwtAccessDeniedHandler;
 import com.tranner.external_api_proxy.common.security.jwt.JwtAuthenticationEntryPoint;
+import com.tranner.external_api_proxy.common.security.jwt.JwtFilter;
 import com.tranner.external_api_proxy.common.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -28,7 +30,13 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtUtil jwtUtil;
     //private final CustomJwtDecoder customJwtDecoder;
+
+    @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(jwtUtil);  // jwtUtil은 생성자 주입으로 해결됨
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,17 +51,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
-                )
-
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .bearerTokenResolver(bearerTokenResolver()) // 너가 정의한 커스텀 BearerTokenResolver
-//                        .jwt(jwt -> jwt
-//                                .jwtDecoder(customJwtDecoder) // 위에서 만든 CustomJwtDecoder
-//                        )
-                        .jwt(Customizer.withDefaults())
                 );
 
         return http.build();

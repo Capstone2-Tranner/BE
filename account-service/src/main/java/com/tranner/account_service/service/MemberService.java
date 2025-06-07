@@ -37,34 +37,27 @@ public class MemberService {
     public void refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         // 1. 쿠키에서 refreshToken 꺼내기
         String refreshToken = extractRefreshTokenFromCookies(request);
+        System.out.println("refreshToken: "+refreshToken);
+
         if (refreshToken == null) {
+            System.out.println("refreshToken is null");
             throw new BusinessLogicException(AccountErrorCode.MISSING_REFRESH_TOKEN);
         }
 
-        // 2. 만료된 accessToken에서 memberId 추출 (단, 서명은 유효해야 함)
-        String expiredAccessToken = extractAccessTokenFromHeader(request);
-        if (expiredAccessToken == null) {
-            throw new BusinessLogicException(AccountErrorCode.MISSING_ACCESS_TOKEN);
-        }
-
-        String memberId;
-        try {
-            memberId = jwtUtil.getMemberId(expiredAccessToken);
-        } catch (Exception e) {
-            throw new BusinessLogicException(AccountErrorCode.INVALID_ACCESS_TOKEN);
-        }
-
-        // 3. Redis에 저장된 refreshToken과 일치하는지 확인
-        boolean valid = redisService.isValidRefreshToken(memberId, refreshToken);
-        if (!valid) {
+        // 2. Redis에서 memberId 추출 (value = memberId)
+        String memberId = redisService.getMemberIdFromRefreshToken(refreshToken);
+        System.out.println("memberId: "+memberId);
+        if (memberId == null) {
             throw new BusinessLogicException(AccountErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         // 4. role (DB나 캐시에서 가져오거나 하드코딩)
-        String role = Role.USER.getKey();
+        String role = Role.ROLE_USER.getKey();
 
         // 5. 새 AccessToken 발급
         String newAccessToken = jwtUtil.createAccessToken(memberId, role);
+
+        // 이 이후에 redis에서 refresh token 삭제??
 
         // 6. 응답 헤더 및 바디 구성
         response.addHeader("Authorization", "Bearer " + newAccessToken);
@@ -102,7 +95,7 @@ public class MemberService {
                 .email(request.memberEmail())
                 .memberType(MemberType.OWN)
                 .registerDate(LocalDate.now())
-                .role(Role.USER) // ADMIN은 관리자만 주도록 설정해야함
+                .role(Role.ROLE_USER) // ADMIN은 관리자만 주도록 설정해야함
                 .build();
         memberRepository.save(member);
     }
