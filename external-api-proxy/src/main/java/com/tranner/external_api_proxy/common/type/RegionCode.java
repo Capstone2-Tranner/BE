@@ -24,7 +24,7 @@ public enum RegionCode {
     사이판(6, "Saipan"),
     // 이탈리아
     로마(1, "Rome"),
-    피렌체(1, "Florence"),
+    피렌체(2, "Florence"),
     베니스(3, "Venice"),
     밀라노(4, "Milan"),
     나폴리(5, "Naples"),
