@@ -2,11 +2,13 @@ package com.tranner.external_api_proxy.search.service;
 
 import com.tranner.external_api_proxy.api.dto.response.DetailSearchResult;
 import com.tranner.external_api_proxy.api.dto.response.V1KeywordSearchResponse;
+import com.tranner.external_api_proxy.api.service.NearbySearchService;
 import com.tranner.external_api_proxy.api.service.PlaceDetailService;
 import com.tranner.external_api_proxy.api.service.V1TextSearchService;
 import com.tranner.external_api_proxy.common.type.RegionCode;
 import com.tranner.external_api_proxy.discovery.dto.response.DetailResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlaceListResponseDTO;
+import com.tranner.external_api_proxy.discovery.dto.response.PlacesDTO;
 import com.tranner.external_api_proxy.search.dto.response.PlaceDTO;
 import com.tranner.external_api_proxy.search.dto.response.SearchResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,43 @@ import java.util.List;
 public class SearchService {
 
     private final V1TextSearchService v1TextSearchService;
+    private final NearbySearchService nearbySearchService;
     private final PlaceDetailService placeDetailService;
+
+    public Mono<SearchResponseDTO> nearbySearch(Double latitude, Double longitude, @Nullable String pageToken) {
+
+
+        return nearbySearchService.searchNearbyLegacy(latitude, longitude, pageToken)
+                .map(response -> {
+                    if (response == null) {
+                        throw new RuntimeException("Google Places API 응답이 null입니다.");
+                    }
+
+                    // 4. 응답 매핑
+                    List<PlaceDTO> dtoList = response.getPlaces().stream()
+                            .map(place -> PlaceDTO.builder()
+                                    .placeId(place.getId())
+                                    .placeName(place.getPlaceName())
+                                    .placeType(place.getPlaceType().toString())
+                                    .photoUrl(place.getPhotoUrl())
+                                    .address(place.getAddress())
+                                    .latitude(place.getLatitude())
+                                    .longitude(place.getLongitude())
+                                    .build())
+                            .toList();
+                    System.out.println("4. DTO 변환 완료, 총 개수: " + dtoList.size());
+
+                    // 5. 최종 응답 객체 생성
+                    SearchResponseDTO result = SearchResponseDTO.builder()
+                            .places(dtoList)
+                            .pageToken(response.getNextPageToken())
+                            .build();
+                    System.out.println("5. 응답 객체 생성 완료, pageToken: " + response.getNextPageToken());
+
+                    return result;
+
+                });
+    }
 
     public SearchResponseDTO searchByText(String text, Double latitude, Double longitude, @Nullable String pageToken) {
 
