@@ -236,7 +236,7 @@ public class DiscoveryService {
                             .placeType(detail.getPlaceType().name())
                             .photoUrl(detail.getPhotoUrl())
                             .countryName(countryCode.name())
-                            .regionName(regionCode.name())
+                            .regionName(RegionCode.fromCountryAndCode(countryCode, regionCode.getCode()).name())
                             .build()
                     );
 
