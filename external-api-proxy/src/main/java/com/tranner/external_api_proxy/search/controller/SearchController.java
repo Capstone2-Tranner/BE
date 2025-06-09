@@ -1,6 +1,7 @@
 package com.tranner.external_api_proxy.search.controller;
 
 import com.tranner.external_api_proxy.discovery.dto.response.DetailResponseDTO;
+import com.tranner.external_api_proxy.discovery.dto.response.PlaceListResponseDTO;
 import com.tranner.external_api_proxy.search.dto.response.SearchResponseDTO;
 import com.tranner.external_api_proxy.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,19 @@ public class SearchController {
     private final SearchService searchService;
 
     /*
+        1. 주변 검색(전체보기에서 사용)
         1. 검색어로 검색 text search, location 설정
         2. 타입 별 검색(명소, 맛집, 숙소)
      */
+
+    //1. 주변 검색
+    @GetMapping("/nearbySearch")
+    public ResponseEntity<SearchResponseDTO> nearbySearch(@RequestParam("latitude") Double latitude,
+                                                             @RequestParam("longitude") Double longitude,
+                                                             @RequestParam("pageToken") @Nullable String pageToken){
+        SearchResponseDTO searchResponseDTO = searchService.nearbySearch(latitude, longitude, pageToken).block();
+        return ResponseEntity.ok().body(searchResponseDTO);
+    }
 
     /**
      * @param text
