@@ -11,6 +11,7 @@ import com.tranner.external_api_proxy.discovery.domain.PopularPlace;
 import com.tranner.external_api_proxy.discovery.dto.response.DetailResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlaceListResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlacesDTO;
+import com.tranner.external_api_proxy.discovery.dto.response.RecentResponseDTO;
 import com.tranner.external_api_proxy.discovery.repository.DiscoveryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -219,24 +220,33 @@ public class DiscoveryService {
         return places;
     }
 
-    public Mono<List<PlacesDTO>> getPlacesByIds(List<String> placeIds) {
-        List<Mono<PlacesDTO>> monoList = new ArrayList<>();
+    public Mono<List<RecentResponseDTO>> getRecentPlacesWithMetadata(List<String> rawPlaceList) {
+        List<Mono<RecentResponseDTO>> monoList = new ArrayList<>();
 
-        for (String placeId : placeIds) {
-            Mono<PlacesDTO> placeDtoMono = getDetails(placeId)
-                    .map(detail -> new PlacesDTO(
-                            detail.getPlaceId(),
-                            detail.getName(),
-                            detail.getPlaceType().name(),
-                            detail.getPhotoUrl()
-                    ));
-            monoList.add(placeDtoMono);
+        for (String raw : rawPlaceList) {
+            String[] parts = raw.split(":");
+            String placeId = parts[0];
+            CountryCode countryCode = parts.length > 1 ? CountryCode.fromCode(Integer.parseInt(parts[1])) : null;
+            RegionCode regionCode = parts.length > 2 ? RegionCode.fromCode(Integer.parseInt(parts[2])) : null;
+
+            Mono<RecentResponseDTO> dtoMono = getDetails(placeId)
+                    .map(detail -> RecentResponseDTO.builder()
+                            .placeId(detail.getPlaceId())
+                            .placeName(detail.getName())
+                            .placeType(detail.getPlaceType().name())
+                            .photoUrl(detail.getPhotoUrl())
+                            .countryName(countryCode.name())
+                            .regionName(regionCode.name())
+                            .build()
+                    );
+
+            monoList.add(dtoMono);
         }
 
         return Mono.zip(monoList, results -> {
-            List<PlacesDTO> dtoList = new ArrayList<>();
+            List<RecentResponseDTO> dtoList = new ArrayList<>();
             for (Object obj : results) {
-                dtoList.add((PlacesDTO) obj);
+                dtoList.add((RecentResponseDTO) obj);
             }
             return dtoList;
         });

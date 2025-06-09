@@ -3,6 +3,7 @@ package com.tranner.external_api_proxy.discovery.controller;
 import com.tranner.external_api_proxy.discovery.dto.response.DetailResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlaceListResponseDTO;
 import com.tranner.external_api_proxy.discovery.dto.response.PlacesDTO;
+import com.tranner.external_api_proxy.discovery.dto.response.RecentResponseDTO;
 import com.tranner.external_api_proxy.discovery.service.DiscoveryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,13 +59,16 @@ public class DiscoveryController {
         2. 최근 조회 목록 요청
      */
     @PostMapping("/recent")
-    public ResponseEntity<List<PlacesDTO>> recentPlaces(@RequestBody List<String> placeIds) {
-        if (placeIds == null || placeIds.isEmpty()) {
+    public ResponseEntity<List<RecentResponseDTO>> recentPlaces(@RequestBody Map<String, List<String>> body) {
+        List<String> rawPlaceList = body.get("places");
+
+        if (rawPlaceList == null || rawPlaceList.isEmpty()) {
             return ResponseEntity.ok(List.of());
         }
+
         // 예: 외부 API에 여러 ID 조회 요청
-        List<PlacesDTO> result = discoveryService.getPlacesByIds(placeIds).block();
-        return ResponseEntity.ok(result);
+        List<RecentResponseDTO> response = discoveryService.getRecentPlacesWithMetadata(rawPlaceList).block();
+        return ResponseEntity.ok(response);
     }
 
 }
