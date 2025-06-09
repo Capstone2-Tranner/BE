@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .httpBasic(auth -> auth.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/discovery/**", "/api/search/**").permitAll()
+                        .requestMatchers("/api/discovery/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
