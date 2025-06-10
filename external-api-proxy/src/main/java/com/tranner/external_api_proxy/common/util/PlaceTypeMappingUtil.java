@@ -16,14 +16,14 @@ public class PlaceTypeMappingUtil {
             return PlaceType.ETC;
         }
 
-        if (googleTypes.stream().anyMatch(ATTRACTION_TYPES::contains)) {
-            return PlaceType.ATTRACTION;
+        if (googleTypes.stream().anyMatch(HOTEL_TYPES::contains)) {
+            return PlaceType.HOTEL;
         }
         if (googleTypes.stream().anyMatch(RESTAURANT_TYPES::contains)) {
             return PlaceType.RESTAURANT;
         }
-        if (googleTypes.stream().anyMatch(HOTEL_TYPES::contains)) {
-            return PlaceType.HOTEL;
+        if (googleTypes.stream().anyMatch(ATTRACTION_TYPES::contains)) {
+            return PlaceType.ATTRACTION;
         }
 
         return PlaceType.ETC;
