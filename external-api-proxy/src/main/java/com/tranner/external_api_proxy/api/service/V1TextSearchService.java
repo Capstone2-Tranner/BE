@@ -382,7 +382,7 @@ public class V1TextSearchService{
     public Mono<V1KeywordSearchResponse> searInPlan(String textQuery, Double latitude, Double longitude, @Nullable String pageToken) {
         //location 생성
 
-        return redisService.getCachedTextSearchMono(textQuery, pageToken)
+        return redisService.getCachedTextSearchLocMono(textQuery,latitude, longitude, pageToken)
                 .filter(cached -> cached != null)
                 .switchIfEmpty(Mono.defer(() -> {
                     Map<String, Object> bodyMap = new HashMap<>();
@@ -489,7 +489,7 @@ public class V1TextSearchService{
                                 V1KeywordSearchResponse response = new V1KeywordSearchResponse(results, nextPageToken);
                                 return response;
                             })
-                            .doOnNext(response -> redisService.cacheTextSearch(textQuery, pageToken, response))
+                            .doOnNext(response -> redisService.cacheTextSearchLoc(textQuery, latitude, longitude, pageToken, response))
                             // ✅ 네트워크/파싱 등 예외 잡아서 로깅 후 fallback
                             .onErrorResume(ex -> {
                                 return Mono.error(new InternalServerException(ApiErrorCode.GOOGLE_API_REQUEST_ERROR, ex.getMessage()));
