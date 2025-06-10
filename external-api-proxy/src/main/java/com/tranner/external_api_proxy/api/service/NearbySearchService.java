@@ -28,7 +28,7 @@ public class NearbySearchService {
     private String GOOGLE_PLACES_KEY;
 
     public Mono<V1KeywordSearchResponse> searchNearbyLegacy(Double latitude, Double longitude, @Nullable String pageToken) {
-        Integer radius = 500;
+        Integer radius = 3000;
 
         return webClient.get()
                 .uri(uriBuilder -> {
