@@ -42,7 +42,7 @@ public class PlanService {
                         s.getEndDate(),
                         s.getHowManyPeople(),
                         s.getCountryCode().name(),   // or getDisplayName() if you want 한글
-                        s.getRegionCode().name()
+                        RegionCode.fromCountryAndCode(s.getCountryCode(), s.getRegionCode().getCode()).name()
                 ))
                 .toList();
 
@@ -135,7 +135,7 @@ public class PlanService {
                 schedule.getEndDate(),
                 schedule.getHowManyPeople(),
                 schedule.getCountryCode().name(),
-                schedule.getRegionCode().name(),
+                RegionCode.fromCountryAndCode(schedule.getCountryCode(), schedule.getRegionCode().getCode()).name(),
                 daySchedules
         );
     }
