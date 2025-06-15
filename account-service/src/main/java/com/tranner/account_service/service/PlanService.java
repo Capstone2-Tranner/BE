@@ -87,7 +87,7 @@ public class PlanService {
                 schedule.getEndDate(),
                 schedule.getHowManyPeople(),
                 schedule.getCountryCode().name(),
-                schedule.getRegionCode().name(),
+                RegionCode.fromCountryAndCode(schedule.getCountryCode(), schedule.getRegionCode().getCode()).name(),
                 daySchedules
         );
     }
